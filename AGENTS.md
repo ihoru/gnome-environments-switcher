@@ -14,7 +14,8 @@ Read README.md for user behavior and docs/RELEASING.md before publication work.
 - Update `CHANGELOG.md` for every significant modification before considering the work complete.
   Add entries under `Unreleased`, grouped as `User-facing` (features, behavior, UI, and visible fixes)
   or `Internal` (tests, refactoring, tooling, and contributor/agent guidance). Describe the resulting
-  change; keep existing release history intact.
+  change; keep existing release history intact. Record the landing website once as introduced;
+  omit subsequent website-only changes, including styling, content, media, and deployment tweaks.
 
 ## Current documentation
 

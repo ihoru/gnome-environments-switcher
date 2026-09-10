@@ -70,15 +70,10 @@ for installation through the GNOME Extensions website.
 This permanent link follows the latest GitHub release automatically. It downloads the installable
 extension, not a source-code archive.
 
-On GNOME Shell 46, disable an existing installation first:
-
-```sh
-gnome-extensions disable environments-switcher@ihoru.github.io
-```
-
-Skip that command on a first installation. If using the old prototype, disable
-`environments-switcher@local` instead. Download and install the latest release as your normal
-user with `wget` and `gnome-extensions` (no Node or build tools needed):
+If using the old prototype, disable `environments-switcher@local` first. Normal upgrades of
+`environments-switcher@ihoru.github.io` do not require disabling it before installation.
+Download and install the latest release as your normal user with `wget` and
+`gnome-extensions` (no Node or build tools needed):
 
 ```sh
 zip=$(mktemp --suffix=.shell-extension.zip) &&
@@ -89,7 +84,8 @@ rm -f "$zip"
 ```
 
 The command uses a unique temporary file, installs only after a successful download, and removes
-the file after successful installation. Log out and back in, then enable it in the Extensions app or run:
+the file after successful installation. On X11, press `Alt+F2`, type `r`, and press Enter to restart
+GNOME Shell. On Wayland, log out and back in instead. Then enable it in the Extensions app or run:
 
 ```sh
 gnome-extensions enable environments-switcher@ihoru.github.io
@@ -115,10 +111,9 @@ npm ci
 npm run check
 ```
 
-Before installing, disable the old version if present:
-
-- Prototype: `gnome-extensions disable environments-switcher@local`
-- Existing public build: `gnome-extensions disable environments-switcher@ihoru.github.io`
+If replacing the old prototype, disable it first with
+`gnome-extensions disable environments-switcher@local`. Normal upgrades of the public build do not
+require disabling it before installation.
 
 Then install the checked bundle as your normal user:
 
@@ -126,13 +121,13 @@ Then install the checked bundle as your normal user:
 gnome-extensions install --force dist/environments-switcher@ihoru.github.io.shell-extension.zip
 ```
 
-Log out and back in, then enable through the Extensions app or:
+On X11, press `Alt+F2`, type `r`, and press Enter to restart GNOME Shell. On Wayland, log out and
+back in instead. Then enable through the Extensions app or:
 
 ```sh
 gnome-extensions enable environments-switcher@ihoru.github.io
 ```
 
-On X11, `Alt+F2`, `r`, Enter can reload Shell instead. Wayland requires logout/login.
 Disabling and enabling alone may keep old JavaScript modules cached.
 
 ### Local development and replacing the prototype
