@@ -1,0 +1,22 @@
+name: Bug report
+description: Report a reproducible extension problem
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Distribution, GNOME version, X11/Wayland, extension version, monitors/scaling, other extensions and Num Lock state.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps, expected result and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Remove personal information. See README for diagnostic logging.
+      render: text

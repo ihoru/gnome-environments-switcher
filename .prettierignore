@@ -1,0 +1,8 @@
+node_modules/
+venv/
+.venv/
+dist/
+.agents/
+.codex/
+*.backup-*
+package-lock.json

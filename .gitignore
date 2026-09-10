@@ -1,0 +1,31 @@
+# Local tooling and generated artifacts
+node_modules/
+venv/
+.venv/
+dist/
+coverage/
+.cache/
+.agents/
+.codex/
+*.zip
+src/schemas/gschemas.compiled
+*.log
+__pycache__/
+# Editor files and timestamped backups
+*~
+*.swp
+*.swo
+*.bak
+*.backup
+*.backup-*
+*.backup.*
+backups/
+.backups/
+.DS_Store
+.env
+.env.*
+# Private session records
+SESSION*.md
+SESSION*.json
+CHAT-CHANGES*.md
+TRASH-MANIFEST*.json

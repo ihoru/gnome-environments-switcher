@@ -1,0 +1,26 @@
+{
+  "name": "gnome-environments-switcher",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test": "node --test --test-isolation=none tests/*.test.js && python3 -m unittest discover -s tests -p '*_test.py'",
+    "validate": "python3 scripts/validate.py",
+    "dev:install": "npm run check && python3 scripts/install_local.py",
+    "pack": "python3 scripts/pack.py",
+    "check": "npm run format:check && npm run lint && npm run validate && npm test && npm run pack"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.10.0",
+    "globals": "17.12.0",
+    "prettier": "3.9.6"
+  }
+}

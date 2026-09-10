@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.environments-switcher" path="/org/gnome/shell/extensions/environments-switcher/">
+    <key name="debug-logging" type="b">
+      <default>false</default>
+      <summary>Enable diagnostic journal logging</summary>
+    </key>
+    <key name="desktop-settings-backup" type="s">
+      <default>'{}'</default>
+      <summary>Persistent restoration state for temporarily changed desktop settings</summary>
+    </key>
+    <key name="active-context" type="s">
+      <default>"personal"</default>
+      <summary>Active environment</summary>
+      <description>The active logical environment.</description>
+    </key>
+    <key name="workspaces-per-context" type="i">
+      <default>9</default>
+      <range min="1" max="99"/>
+      <summary>Workspaces per context</summary>
+      <description>How many logical workspaces are available per environment.</description>
+    </key>
+    <key name="last-workspace-personal" type="i">
+      <default>0</default>
+      <range min="0" max="98"/>
+      <summary>Last active personal workspace</summary>
+      <description>Last logical workspace used in Personal context.</description>
+    </key>
+    <key name="last-workspace-work" type="i">
+      <default>0</default>
+      <range min="0" max="98"/>
+      <description>Last logical workspace used in Work context.</description>
+    </key>
+    <key name="context-order" type="s">
+      <default>"personal,work"</default>
+      <summary>Context order</summary>
+      <description>Internal migration helper to preserve context ordering.</description>
+    </key>
+    <key name="window-context-map" type="s">
+      <default>'{}'</default>
+      <summary>Window to context map</summary>
+      <description>JSON map from window id to assigned context.</description>
+    </key>
+    <key name="initialized" type="b">
+      <default>false</default>
+      <summary>Whether defaults were initialized</summary>
+      <description>Internal flag for first-run defaults and migrations.</description>
+    </key>
+
+    <key name="native-shortcut-backup" type="s">
+      <default>'{}'</default>
+      <summary>Original native shortcuts temporarily claimed by the extension</summary>
+    </key>
+    <key name="environment-previous" type="as">
+      <default>['&lt;Primary&gt;&lt;Alt&gt;Left']</default>
+      <summary>Previous workspace in the active environment</summary>
+    </key>
+    <key name="environment-next" type="as">
+      <default>['&lt;Primary&gt;&lt;Alt&gt;Right']</default>
+      <summary>Next workspace in the active environment</summary>
+    </key>
+    <key name="environment-up" type="as">
+      <default>['&lt;Primary&gt;&lt;Alt&gt;Up']</default>
+      <summary>Move one row up within the environment</summary>
+    </key>
+    <key name="environment-down" type="as">
+      <default>['&lt;Primary&gt;&lt;Alt&gt;Down']</default>
+      <summary>Move one row down within the environment</summary>
+    </key>
+    <key name="environment-move-left" type="as">
+      <default>['&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;Left']</default>
+      <summary>Move the focused window left within its environment</summary>
+    </key>
+    <key name="environment-move-right" type="as">
+      <default>['&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;Right']</default>
+      <summary>Move the focused window right within its environment</summary>
+    </key>
+    <key name="environment-move-up" type="as">
+      <default>['&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;Up']</default>
+      <summary>Move the focused window up within its environment</summary>
+    </key>
+    <key name="environment-move-down" type="as">
+      <default>['&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;Down']</default>
+      <summary>Move the focused window down within its environment</summary>
+    </key>
+    <key name="environment-picker" type="as">
+      <default>['&lt;Super&gt;w']</default>
+      <summary>Show Personal and Work workspace grids</summary>
+    </key>
+    <key name="move-other-environment" type="as">
+      <default>['&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;KP_0', '&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;KP_Insert']</default>
+      <summary>Move the focused window to the other environment</summary>
+      <description>Preserve the logical workspace number and follow the window to the other environment.</description>
+    </key>
+    <key name="toggle-context" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_0' ]</default>
+      <summary>Toggle environments</summary>
+      <description>Toggle Personal and Work environments.</description>
+    </key>
+    <key name="switch-workspace-7" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_7' ]</default>
+    </key>
+    <key name="switch-workspace-8" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_8' ]</default>
+    </key>
+    <key name="switch-workspace-9" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_9' ]</default>
+    </key>
+    <key name="switch-workspace-4" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_4' ]</default>
+    </key>
+    <key name="switch-workspace-5" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_5' ]</default>
+    </key>
+    <key name="switch-workspace-6" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_6' ]</default>
+    </key>
+    <key name="switch-workspace-1" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_1' ]</default>
+    </key>
+    <key name="switch-workspace-2" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_2' ]</default>
+    </key>
+    <key name="switch-workspace-3" type="as">
+      <default>[ '&lt;Primary&gt;&lt;Alt&gt;KP_3' ]</default>
+    </key>
+
+    <key name="move-workspace-7" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_7' ]</default>
+    </key>
+    <key name="move-workspace-8" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_8' ]</default>
+    </key>
+    <key name="move-workspace-9" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_9' ]</default>
+    </key>
+    <key name="move-workspace-4" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_4' ]</default>
+    </key>
+    <key name="move-workspace-5" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_5' ]</default>
+    </key>
+    <key name="move-workspace-6" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_6' ]</default>
+    </key>
+    <key name="move-workspace-1" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_1' ]</default>
+    </key>
+    <key name="move-workspace-2" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_2' ]</default>
+    </key>
+    <key name="move-workspace-3" type="as">
+      <default>[ '&lt;Shift&gt;&lt;Primary&gt;&lt;Alt&gt;KP_3' ]</default>
+    </key>
+  </schema>
+</schemalist>
