@@ -3,6 +3,7 @@
 import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
+import { addPreviewBackground } from './previewBackground.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 
@@ -231,9 +232,9 @@ export class WorkspacePicker {
           width: tileWidth,
           height: tileHeight,
           clip_to_allocation: true,
-          style: 'background-color: #242830; border-radius: 4px;',
         });
         content.add_child(preview);
+        addPreviewBackground(preview, ext._settings, monitor, tileWidth, tileHeight);
         const windows =
           workspace
             ?.list_windows()

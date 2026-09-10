@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="org.gnome.shell.extensions.environments-switcher" path="/org/gnome/shell/extensions/environments-switcher/">
+    <key name="preview-background" type="u">
+      <default>1</default>
+      <range min="0" max="2"/>
+      <summary>Workspace preview background: transparent, desktop wallpaper, or brighter color</summary>
+    </key>
     <key name="picker-timeout-ms" type="i">
       <default>500</default>
       <range min="0" max="60000"/>

@@ -30,7 +30,7 @@ export const media = {
     {
       title: 'Settings — General',
       label: 'Names & timing',
-      src: 'assets/media/settings-general.png',
+      src: 'assets/media/settings-general.png?v=0.2.1',
       alt: 'General settings with display names and picker timeout controls',
       caption: 'Environment names and picker timing.',
       symbol: '⚙',

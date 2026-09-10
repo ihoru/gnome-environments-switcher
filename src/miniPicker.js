@@ -3,6 +3,7 @@
 import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
+import { addPreviewBackground } from './previewBackground.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 // Passive shortcut feedback: never grabs input or changes window focus.
@@ -68,9 +69,9 @@ export class MiniPicker {
               width,
               height,
               clip_to_allocation: true,
-              style: 'background-color: #20242c;',
             });
             tile.add_child(preview);
+            addPreviewBackground(preview, ext._settings, monitor, width, height);
             const workspace = ext._getWorkspaceByIndex(physical);
             const windows =
               workspace

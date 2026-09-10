@@ -4,6 +4,18 @@ Significant user-facing and internal changes are recorded here. GNOME Extensions
 
 ## Unreleased
 
+## 0.2.1 — 2026-09-10
+
+### User-facing
+
+- Add a General preference to compare transparent, desktop wallpaper, and brighter backgrounds in Picker and Preview; use Desktop wallpaper by default while preserving explicit choices.
+
+### Internal
+
+- Add shared monitor-aware preview backgrounds with cleanup and regression coverage.
+
+## 0.2.0 — 2026-09-10
+
 ### User-facing
 
 - Introduce the project landing website.

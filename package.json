@@ -1,6 +1,6 @@
 {
   "name": "gnome-environments-switcher",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -8,6 +8,7 @@
     "node": ">=24"
   },
   "scripts": {
+    "precheck": "python3 scripts/version_site_css.py",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",

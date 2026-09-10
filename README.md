@@ -7,7 +7,7 @@
 
 Navigate by keyboard, move a window and follow it, or choose a workspace from previews on every monitor.
 
-> Version **0.2.0** targets GNOME Shell 46. Installation options are listed below;
+> Version **0.2.1** targets GNOME Shell 46. Installation options are listed below;
 > See the GNOME Extensions page or download a GitHub release ZIP. The full live compatibility matrix remains
 > pending in [the release checklist](docs/RELEASING.md).
 

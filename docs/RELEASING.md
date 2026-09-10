@@ -63,7 +63,7 @@ use `--format json` for machine-readable findings rather than relying on the exi
 
 ## Version metadata
 
-Set `src/metadata.json`'s `version-name` to the user-visible extension version (currently `0.2.0`).
+Set `src/metadata.json`'s `version-name` to the user-visible extension version (currently `0.2.1`).
 Keep it within GNOME's 1–16 character limit using letters, numbers, spaces, and periods.
 The npm package version describes development tooling; EGO assigns its own integer `version`,
 which remains omitted from source metadata.

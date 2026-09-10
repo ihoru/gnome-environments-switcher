@@ -108,6 +108,23 @@ export default class EnvironmentsPreferences extends ExtensionPreferences {
       names.add(error);
     }
 
+    const appearance = new Adw.PreferencesGroup({
+      title: 'Picker appearance',
+      description: 'Applies to Picker and Preview the next time they open.',
+    });
+    namesPage.add(appearance);
+    const background = new Adw.ComboRow({
+      title: 'Workspace background',
+      subtitle: 'Transparent reveals the tile; wallpaper uses the monitor’s desktop background.',
+      model: Gtk.StringList.new(['Transparent', 'Desktop wallpaper', 'Brighter color']),
+    });
+    settings.bind('preview-background', background, 'selected', Gio.SettingsBindFlags.DEFAULT);
+    appearance.add(background);
+    window.connect('close-request', () => {
+      Gio.Settings.unbind(background, 'selected');
+      return false;
+    });
+
     const timing = new Adw.PreferencesGroup({
       title: 'Picker timing',
       description: 'Milliseconds before hiding after modifier release. Zero closes immediately.',

@@ -10,7 +10,7 @@ SOURCE = ROOT / "src"
 UUID = "environments-switcher@ihoru.github.io"
 SCHEMA = "org.gnome.shell.extensions.environments-switcher"
 RUNTIME = ["extension.js", "directionalAnimation.js", "miniPicker.js",
-           "workspacePicker.js", "settingsTransaction.js", "diagnosticLog.js"]
+           "workspacePicker.js", "previewBackground.js", "settingsTransaction.js", "diagnosticLog.js"]
 
 
 PREFERENCES = ["prefs.js", "preferencesModel.js", "preferencesExtras.js",

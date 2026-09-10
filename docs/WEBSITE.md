@@ -14,6 +14,11 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory site
 
 Open `http://localhost:8000/`. Use HTTP rather than `file://` for JavaScript modules.
 Run `npm run check` for formatting, JavaScript lint, extension checks, and packaging.
+It also refreshes the CSS content hash in the stylesheet URL. After editing CSS during
+local previews, run `python3 scripts/version_site_css.py` and reload the page.
+The Pages workflow refreshes this hash before each upload, so changed CSS gets a new
+cache URL while unchanged CSS remains cacheable. An already-open page needs a reload
+to receive the new HTML and stylesheet URL.
 Browser checks should also cover narrow screens, keyboard navigation, media failures,
 and a project subpath such as `/gnome-environments-switcher/`.
 
