@@ -10,7 +10,11 @@ SOURCE = ROOT / "src"
 UUID = "environments-switcher@ihoru.github.io"
 SCHEMA = "org.gnome.shell.extensions.environments-switcher"
 RUNTIME = ["extension.js", "directionalAnimation.js", "miniPicker.js",
-           "workspacePicker.js", "settingsTransaction.js"]
+           "workspacePicker.js", "settingsTransaction.js", "diagnosticLog.js"]
+
+
+PREFERENCES = ["prefs.js", "preferencesModel.js", "preferencesExtras.js",
+               "settingsTransfer.js", "projectInfo.js", "preferencesDiagnostics.js"]
 
 
 def validate():
@@ -31,11 +35,12 @@ def validate():
     assert schema.attrib["path"] == "/org/gnome/shell/extensions/environments-switcher/"
     keys = [key.attrib["name"] for key in schema.findall("key")]
     assert len(keys) == len(set(keys))
-    for name in RUNTIME:
+    for name in [*RUNTIME, *PREFERENCES]:
         source = (SOURCE / name).read_text()
         for imported in re.findall(r'from\s+[\'"](\./[^\'"]+)[\'"]', source):
-            assert imported[2:] in RUNTIME, f"Unpackaged import in {name}: {imported}"
-        assert not re.search(r'from\s+[\'"]gi://(?:Gtk|Gdk|Adw)(?:[?\'"])', source)
+            assert imported[2:] in (RUNTIME if name in RUNTIME else PREFERENCES), f"Unpackaged import in {name}: {imported}"
+        if name in RUNTIME:
+            assert not re.search(r'from\s+[\'"]gi://(?:Gtk|Gdk|Adw)(?:[?\'"])', source)
         subprocess.run(["node", "--check", str(SOURCE / name)], check=True)
     subprocess.run(["glib-compile-schemas", "--strict", "--dry-run", str(SOURCE / "schemas")], check=True)
     print("Metadata, runtime imports, JavaScript syntax and strict schemas passed.")

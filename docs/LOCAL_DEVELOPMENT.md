@@ -126,3 +126,18 @@ of that revision, then reload the session. You can also reinstall a saved ZIP wi
 
 See [GNOME's extension structure documentation](https://gjs.guide/extensions/overview/anatomy.html)
 for the UUID-based installation layout.
+
+## Picker theme regression
+
+On a GNOME Shell 46 machine with Yaru light/dark themes installed, run:
+
+```sh
+python3 scripts/check_picker_theme.py
+```
+
+This opt-in check starts a disposable headless GNOME session with separate XDG directories
+and a keyfile settings backend. It renders the actual Picker and Preview modules against both
+themes and requires at least 4.5:1 foreground/background contrast for their heading labels.
+It does not install into or change the running desktop. Test output and Shell logs remain in
+the printed temporary directory. It is separate from `npm run check` because it needs a
+working nested compositor and the installed Yaru themes.

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 
+import { DiagnosticLog } from './diagnosticLog.js';
+
 import { DirectionalAnimation } from './directionalAnimation.js';
 import { SettingsTransaction } from './settingsTransaction.js';
 
@@ -71,8 +73,7 @@ function _clampInt(value, min, max) {
   return Math.max(min, Math.min(max, Math.floor(value)));
 }
 
-function _workspaceName(context, index, perContextCount) {
-  const label = context === CONTEXT_PERSONAL ? 'Personal' : 'Work';
+function _workspaceName(label, index, perContextCount) {
   return `${label} ${index + 1} (${index + 1}/${perContextCount})`;
 }
 
@@ -132,18 +133,30 @@ export default class EnvironmentsSwitcherExtension extends Extension {
   }
 
   _log(event, details = {}) {
+    const enabled = this._settings?.get_boolean('debug-logging');
     const important = /error|failed|missing/.test(event);
-    if (!important && !this._settings?.get_boolean('debug-logging')) return;
-    console.log(
+    if (!important && !enabled) return;
+    const message =
       '[environments-switcher] ' +
-        JSON.stringify({
-          event,
-          context: this._activeContext,
-          physicalWorkspace: this._activeWorkspaceIndex() + 1,
-          workspaceCount: this._workspaceCount(),
-          ...details,
-        }),
-    );
+      JSON.stringify({
+        event,
+        context: this._activeContext,
+        physicalWorkspace: this._activeWorkspaceIndex() + 1,
+        workspaceCount: this._workspaceCount(),
+        ...details,
+      });
+    console.log(message);
+    if (enabled) this._diagnosticLog?.write(message);
+  }
+
+  _syncDiagnosticLogging() {
+    if (this._settings.get_boolean('debug-logging')) {
+      if (!this._diagnosticLog) this._diagnosticLog = new DiagnosticLog();
+      this._log('diagnostic-logging-enabled');
+    } else {
+      this._diagnosticLog?.destroy();
+      this._diagnosticLog = null;
+    }
   }
 
   _normalizeAccelerator(accelerator) {
@@ -182,6 +195,7 @@ export default class EnvironmentsSwitcherExtension extends Extension {
         .map((value) => this._normalizeAccelerator(value)),
     );
     for (const key of native.settings_schema.list_keys()) {
+      if (this._releasedNativeShortcuts?.has(key)) continue;
       if (native.settings_schema.get_key(key).get_value_type().dup_string() !== 'as') continue;
       const original = native.get_strv(key);
       const applied = original.filter((value) => !owned.has(this._normalizeAccelerator(value)));
@@ -190,6 +204,7 @@ export default class EnvironmentsSwitcherExtension extends Extension {
         Object.hasOwn(backup, key) &&
         JSON.stringify(original) !== JSON.stringify(backup[key].applied)
       ) {
+        this._releasedNativeShortcuts?.add(key);
         delete backup[key];
         this._settings.set_string('native-shortcut-backup', JSON.stringify(backup));
         continue;
@@ -222,6 +237,7 @@ export default class EnvironmentsSwitcherExtension extends Extension {
         else if (!native.set_strv(key, entry.user)) continue;
         this._log('shortcut-restored', { key });
       } else {
+        this._releasedNativeShortcuts?.add(key);
         this._log('shortcut-restore-skipped-user-change', { key });
       }
       delete backup[key];
@@ -241,6 +257,9 @@ export default class EnvironmentsSwitcherExtension extends Extension {
   _enable() {
     this._log('enable-start');
     this._settings = this.getSettings();
+    this._releasedNativeShortcuts = new Set();
+    this._workspaceNamesReleased = false;
+    this._syncDiagnosticLogging();
 
     this._workspacesPerContext = _clampInt(
       this._settings.get_int(KEY_WORKSPACES_PER_CONTEXT),
@@ -267,6 +286,7 @@ export default class EnvironmentsSwitcherExtension extends Extension {
     this._hideOverviewStrip();
     this._installKeybindings();
     this._installSignals();
+    this._watchPreferences();
 
     this._restoreWindowContexts();
     this._syncToSavedContext();
@@ -281,7 +301,11 @@ export default class EnvironmentsSwitcherExtension extends Extension {
         console.error(`[environments-switcher] cleanup-error: ${error}`);
       }
     };
+    clean(() => this._diagnosticLog?.destroy());
+    this._diagnosticLog = null;
     // Disconnect observers before restoring desktop settings/workspace counts.
+    if (this._preferencesSignal) clean(() => this._settings.disconnect(this._preferencesSignal));
+    this._preferencesSignal = 0;
     if (this._workspaceChangedId)
       clean(() => this._workspaceManager().disconnect(this._workspaceChangedId));
     this._workspaceChangedId = 0;
@@ -319,6 +343,65 @@ export default class EnvironmentsSwitcherExtension extends Extension {
     this._windowContextMap = {};
   }
 
+  _environmentName(context) {
+    return (
+      this._settings?.get_string(`environment-name-${context}`).trim() ||
+      (context === CONTEXT_PERSONAL ? 'Personal' : 'Work')
+    );
+  }
+
+  _watchPreferences() {
+    // Keep the complete key set even if a later registration attempt fails.
+    this._shortcutKeys = new Set(this._bindings);
+    this._preferencesSignal = this._settings.connect('changed', (_settings, key) => {
+      try {
+        if (key === 'debug-logging') {
+          this._syncDiagnosticLogging();
+        } else if (key === 'environment-name-personal' || key === 'environment-name-work') {
+          this._updateEnvironmentNames();
+        } else if (this._shortcutKeys.has(key)) {
+          this._refreshKeybindings();
+        }
+      } catch (error) {
+        console.error(`[environments-switcher] preferences-error: ${error}`);
+        Main.notifyError('Environments Switcher', `Could not apply preferences: ${error.message}`);
+      }
+    });
+  }
+
+  _refreshKeybindings() {
+    for (const name of this._bindings) Main.wm.removeKeybinding(name);
+    this._bindings = [];
+    this._restoreConflictingShortcuts();
+    try {
+      this._installKeybindings();
+    } catch (error) {
+      for (const name of this._bindings) Main.wm.removeKeybinding(name);
+      this._bindings = [];
+      this._restoreConflictingShortcuts();
+      throw error;
+    }
+  }
+
+  _updateEnvironmentNames() {
+    this._updateIndicator();
+    this._picker?.refreshNames();
+    this._miniPicker?.refreshNames();
+    if (this._workspaceNamesReleased || !this._desktopTransaction) return;
+    const settings = new Gio.Settings({ schema_id: 'org.gnome.desktop.wm.preferences' });
+    const names = Array.from({ length: this._requiredWorkspaceCount() }, (_, i) =>
+      _workspaceName(
+        this._environmentName(_workspaceContextFromIndex(i, this._workspacesPerContext)),
+        i % this._workspacesPerContext,
+        this._workspacesPerContext,
+      ),
+    );
+    this._workspaceNamesReleased = !this._desktopTransaction.apply(
+      'org.gnome.desktop.wm.preferences/workspace-names',
+      [...names, ...settings.get_strv('workspace-names').slice(names.length)],
+    );
+  }
+
   _configureDesktop() {
     const definitions = [
       [
@@ -335,7 +418,7 @@ export default class EnvironmentsSwitcherExtension extends Extension {
         'as',
         Array.from({ length: this._requiredWorkspaceCount() }, (_, i) =>
           _workspaceName(
-            _workspaceContextFromIndex(i, this._workspacesPerContext),
+            this._environmentName(_workspaceContextFromIndex(i, this._workspacesPerContext)),
             i % this._workspacesPerContext,
             this._workspacesPerContext,
           ),
@@ -576,7 +659,6 @@ export default class EnvironmentsSwitcherExtension extends Extension {
 
   _saveSettings() {
     this._settings.set_string(KEY_ACTIVE_CONTEXT, this._activeContext);
-    this._settings.set_int(KEY_WORKSPACES_PER_CONTEXT, this._workspacesPerContext);
     this._settings.set_string(KEY_WINDOW_CONTEXT_MAP, _serializeContextMap(this._windowContextMap));
   }
 
@@ -703,6 +785,8 @@ export default class EnvironmentsSwitcherExtension extends Extension {
           }
         },
       );
+      if (action === Meta.KeyBindingAction.NONE)
+        throw new Error(`Could not register shortcut action: ${name}`);
       this._log('shortcut-registered', {
         name,
         action,
@@ -963,8 +1047,8 @@ export default class EnvironmentsSwitcherExtension extends Extension {
     }
 
     const logical = this._getLastWorkspace(this._activeContext);
-    const contextName = this._activeContext === CONTEXT_PERSONAL ? 'Personal' : 'Work';
-    const targetName = this._activeContext === CONTEXT_PERSONAL ? 'Work' : 'Personal';
+    const contextName = this._environmentName(this._activeContext);
+    const targetName = this._environmentName(_otherContext(this._activeContext));
 
     this._statusLabel.text = `${contextName}: ${logical + 1} / ${this._workspacesPerContext}`;
     this._toggleItem.label.text = `Switch to ${targetName}`;

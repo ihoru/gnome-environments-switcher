@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="org.gnome.shell.extensions.environments-switcher" path="/org/gnome/shell/extensions/environments-switcher/">
+    <key name="picker-timeout-ms" type="i">
+      <default>500</default>
+      <range min="0" max="60000"/>
+      <summary>Picker delay after releasing Win/Super, in milliseconds</summary>
+    </key>
+    <key name="mini-picker-timeout-ms" type="i">
+      <default>500</default>
+      <range min="0" max="60000"/>
+      <summary>Mini-picker delay after modifier release, in milliseconds</summary>
+    </key>
+    <key name="environment-name-personal" type="s">
+      <default>'Personal'</default>
+      <summary>Display name of the first environment</summary>
+    </key>
+    <key name="environment-name-work" type="s">
+      <default>'Work'</default>
+      <summary>Display name of the second environment</summary>
+    </key>
     <key name="debug-logging" type="b">
       <default>false</default>
       <summary>Enable diagnostic journal logging</summary>

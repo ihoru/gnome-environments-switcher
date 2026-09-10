@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Separate Personal and Work into two workspace environments on GNOME Shell. Switch by keyboard, move windows, and find your focus with Environments Switcher."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#211E22" media="(prefers-color-scheme: dark)" />
+    <title>Environments Switcher — a place for work, a place for everything else</title>
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header wrap">
+      <a class="brand" href="#" aria-label="Environments Switcher home"
+        ><img src="assets/icon.svg" width="34" height="34" alt="" /><span
+          >Environments<br /><strong>Switcher</strong></span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#features">Features</a><a href="#screenshots">Gallery</a
+        ><a href="#install">Install</a
+        ><a class="repo-link" href="https://github.com/ihoru/gnome-environments-switcher"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero wrap" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot"></span> Made for GNOME Shell 46</p>
+          <h1 id="hero-title">Separate work<br />and <em>personal</em><br />workspaces.</h1>
+          <p class="lead">
+            Two environments. One familiar desktop.<br />Give each part of your day a place of its
+            own—and switch without losing your flow.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="#install"
+              >Get the extension <span aria-hidden="true">↓</span></a
+            ><a class="text-link" href="#screenshots"
+              >Take a closer look <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <p class="release-note">v0.2.0 <span>·</span> Open source <span>·</span> MIT licensed</p>
+        </div>
+        <figure
+          class="workspace-art"
+          aria-label="Illustration of Personal and Work environments, each with nine workspaces"
+        >
+          <div class="desktop-bar">
+            <span class="desktop-dots" aria-hidden="true">● ● ●</span
+            ><span>Your desktop, with room to focus</span><span aria-hidden="true">◷</span>
+          </div>
+          <div class="environment personal">
+            <div class="environment-heading">
+              <span><span class="environment-dot"></span> Personal</span><span>9 workspaces</span>
+            </div>
+            <div class="workspace-grid" aria-hidden="true">
+              <div class="tile chosen">1<span class="tiny-window"></span></div>
+              <div class="tile">2</div>
+              <div class="tile">3</div>
+              <div class="tile">4</div>
+              <div class="tile">5<span class="tiny-window"></span></div>
+              <div class="tile">6</div>
+              <div class="tile">7</div>
+              <div class="tile">8</div>
+              <div class="tile">9</div>
+            </div>
+          </div>
+          <div class="environment work">
+            <div class="environment-heading">
+              <span><span class="environment-dot"></span> Work</span><span>9 workspaces</span>
+            </div>
+            <div class="workspace-grid" aria-hidden="true">
+              <div class="tile">1</div>
+              <div class="tile">2<span class="tiny-window"></span></div>
+              <div class="tile chosen">3<span class="tiny-window wide"></span></div>
+              <div class="tile">4</div>
+              <div class="tile">5</div>
+              <div class="tile">6</div>
+              <div class="tile">7</div>
+              <div class="tile">8</div>
+              <div class="tile">9</div>
+            </div>
+          </div>
+          <figcaption>
+            <span>Workspace layout illustration</span
+            ><span>Personal <span aria-hidden="true">⇄</span> Work</span>
+          </figcaption>
+        </figure>
+      </section>
+      <div class="principle-strip">
+        <div class="wrap">
+          <p><strong>A little structure. A lot less switching context.</strong></p>
+          <p>Keep your hands on the keyboard. Keep your attention on the task.</p>
+        </div>
+      </div>
+      <section class="section wrap" id="features" aria-labelledby="features-title">
+        <div class="section-heading">
+          <p class="eyebrow">A desktop that fits your day</p>
+          <h2 id="features-title">Everything in its own place.</h2>
+          <p>
+            Personal and Work start with nine workspaces each, arranged as two logical 3 × 3 grids.
+            The label in GNOME’s top panel keeps your current environment and workspace in view.
+          </p>
+          <p>
+            For example, <strong>Personal: 2 / 9</strong> means you’re in the Personal environment,
+            on workspace 2 out of its 9 workspaces. The label updates as you switch, and uses your
+            custom environment names. Click it to switch environments or move the focused window to
+            the other environment.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article>
+            <span class="feature-symbol" aria-hidden="true">⇄</span>
+            <h3>Pick up where you left off</h3>
+            <p>
+              Switch environments and return to the last workspace you used there. Your work stays
+              arranged while you step away.
+            </p>
+          </article>
+          <article>
+            <span class="feature-symbol" aria-hidden="true">▦</span>
+            <h3>See the bigger picture</h3>
+            <p>
+              Open the Picker with <kbd>Win</kbd> + <kbd>W</kbd>. Both environments appear on every
+              monitor. Use arrows or a click to switch immediately.
+            </p>
+          </article>
+          <article>
+            <span class="feature-symbol" aria-hidden="true">↗</span>
+            <h3>Move a window. Follow it.</h3>
+            <p>
+              Send the focused window to another workspace or the other environment, and follow it
+              with focus intact.
+            </p>
+          </article>
+          <article>
+            <span class="feature-symbol" aria-hidden="true">⌘</span>
+            <h3>Find a keyboard rhythm</h3>
+            <p>
+              Navigate with directional shortcuts and wraparound, or jump directly using the numeric
+              keypad. Directional animations help you stay oriented.
+            </p>
+          </article>
+          <article>
+            <span class="feature-symbol" aria-hidden="true">▤</span>
+            <h3>A glance, without interruption</h3>
+            <p>
+              The passive Preview shows your destination as you change workspaces. It stays while
+              modifiers are held, then disappears without taking focus.
+            </p>
+          </article>
+          <article>
+            <span class="feature-symbol" aria-hidden="true">⚙</span>
+            <h3>Make it feel like yours</h3>
+            <p>
+              Rename your environments, customize shortcut alternatives, and set Picker and Preview
+              delays. Both delays default to 500 ms after modifier release.
+            </p>
+          </article>
+        </div>
+        <div class="settings-intro">
+          <div>
+            <p class="eyebrow">Three pages. Your preferences.</p>
+            <h3>Small adjustments.<br />A more familiar workflow.</h3>
+          </div>
+          <dl>
+            <div>
+              <dt>General</dt>
+              <dd>
+                Choose display names and adjust both picker timeouts from 0 to 60,000 ms. Changes
+                apply live.
+              </dd>
+            </div>
+            <div>
+              <dt>Shortcuts</dt>
+              <dd>
+                Record, replace, disable, or reset shortcuts, with alternatives and conflict checks
+                between extension actions.
+              </dd>
+            </div>
+            <div>
+              <dt>More</dt>
+              <dd>
+                Export names, shortcuts, and timeouts to JSON; import them on another installation.
+                Enable optional diagnostic file logging, find project links, and enjoy a little
+                encouragement.
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+      <section class="gallery-section" id="screenshots" aria-labelledby="gallery-title">
+        <div class="wrap section">
+          <div class="section-heading split-heading">
+            <div>
+              <p class="eyebrow">Take a closer look</p>
+              <h2 id="gallery-title">Your workspace, in view.</h2>
+            </div>
+            <p>
+              From the big picture to the smallest preference.<br /><span id="screenshots-notice"
+                >Explore the Picker, multi-monitor Preview, and all three Settings pages.</span
+              >
+            </p>
+          </div>
+          <div
+            id="gallery"
+            class="gallery"
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Extension screenshots"
+          >
+            <div id="gallery-slides" class="gallery-slides">
+              <figure class="gallery-slide">
+                <div class="image-stage">
+                  <img
+                    src="assets/media/picker-one-screen.png"
+                    alt="The Picker showing Personal and Projects workspace grids on one monitor"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>
+                  <strong>Picker — single monitor</strong
+                  ><span>Both environments on a single monitor. Open with Win + W.</span>
+                </figcaption>
+              </figure>
+              <figure class="gallery-slide">
+                <div class="image-stage">
+                  <img
+                    src="assets/media/picker-full.png"
+                    alt="The Picker displayed across four monitors, each showing its own workspace previews"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>
+                  <strong>Picker — multiple monitors</strong
+                  ><span
+                    >The Picker on all four monitors, with monitor-specific window previews.</span
+                  >
+                </figcaption>
+              </figure>
+              <figure class="gallery-slide">
+                <div class="image-stage">
+                  <img
+                    src="assets/media/switch-full.png"
+                    alt="The passive Personal workspace Preview displayed across four monitors"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>
+                  <strong>Preview</strong
+                  ><span
+                    >A passive glance at your destination across four monitors when changing
+                    workspaces.</span
+                  >
+                </figcaption>
+              </figure>
+              <figure class="gallery-slide">
+                <div class="image-stage">
+                  <img
+                    src="assets/media/settings-general.png"
+                    alt="General settings with display names and picker timeout controls"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>
+                  <strong>Settings — General</strong
+                  ><span>Environment names and picker timing.</span>
+                </figcaption>
+              </figure>
+              <figure class="gallery-slide">
+                <div class="image-stage">
+                  <img
+                    src="assets/media/settings-shortcuts.png"
+                    alt="Shortcuts settings with configurable keyboard actions"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>
+                  <strong>Settings — Shortcuts</strong><span>Your keyboard, your workflow.</span>
+                </figcaption>
+              </figure>
+              <figure class="gallery-slide">
+                <div class="image-stage">
+                  <img
+                    src="assets/media/settings-more.png"
+                    alt="More settings with encouragement, settings transfer, diagnostics, and project information"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>
+                  <strong>Settings — More</strong
+                  ><span>Settings files, diagnostics, and the people behind the project.</span>
+                </figcaption>
+              </figure>
+            </div>
+            <div class="gallery-toolbar" id="gallery-toolbar" hidden>
+              <p id="gallery-status" aria-live="polite" aria-atomic="true"></p>
+              <div>
+                <button type="button" id="previous" aria-label="Previous screenshot">←</button
+                ><button type="button" id="next" aria-label="Next screenshot">→</button>
+              </div>
+            </div>
+            <div class="thumbnails" id="thumbnails" aria-label="Choose a screenshot" hidden></div>
+          </div>
+          <div class="screencast" id="demo">
+            <div class="section-heading">
+              <p class="eyebrow">See the flow</p>
+              <h2>A short tour of a focused desktop.</h2>
+            </div>
+            <div id="video-container">
+              <div class="media-placeholder video-placeholder">
+                <span class="play-symbol" aria-hidden="true">▷</span>
+                <p>Screencast coming soon</p>
+                <span>A few moves. A whole new rhythm.</span>
+              </div>
+            </div>
+            <p class="video-description">
+              Change workspaces <span aria-hidden="true">→</span> Move a window to another
+              environment <span aria-hidden="true">→</span> Switch environments
+              <span aria-hidden="true">→</span> Open settings
+            </p>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section wrap shortcuts-section"
+        id="shortcuts"
+        aria-labelledby="shortcuts-title"
+      >
+        <div class="section-heading">
+          <p class="eyebrow">Less reaching. More doing.</p>
+          <h2 id="shortcuts-title">Let your keyboard lead.</h2>
+          <p>
+            Win is the Super key. KP means the numeric keypad. All extension shortcuts can be
+            customized in Settings.
+          </p>
+          <div
+            class="keypad"
+            aria-label="Keypad mapping: 7, 8, 9 select workspaces 1, 2, 3; 4, 5, 6 select 4, 5, 6; 1, 2, 3 select 7, 8, 9"
+          >
+            <span>7 <small>WS 1</small></span
+            ><span>8 <small>WS 2</small></span
+            ><span>9 <small>WS 3</small></span
+            ><span>4 <small>WS 4</small></span
+            ><span>5 <small>WS 5</small></span
+            ><span>6 <small>WS 6</small></span
+            ><span>1 <small>WS 7</small></span
+            ><span>2 <small>WS 8</small></span
+            ><span>3 <small>WS 9</small></span>
+          </div>
+          <p class="small-note">Use Num Lock for keypad workspace selection.</p>
+        </div>
+        <div class="shortcut-list">
+          <div>
+            <span>Open or close Picker</span><span><kbd>Win</kbd> + <kbd>W</kbd></span>
+          </div>
+          <div>
+            <span>Switch environment</span
+            ><span><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>KP 0</kbd></span>
+          </div>
+          <div>
+            <span>Move window to other environment</span
+            ><span><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>KP 0</kbd></span>
+          </div>
+          <div>
+            <span>Previous / next workspace</span
+            ><span><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>← / →</kbd></span>
+          </div>
+          <div>
+            <span>Move up / down three workspaces</span
+            ><span><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>↑ / ↓</kbd></span>
+          </div>
+          <div>
+            <span>Move window in a direction</span
+            ><span><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>Arrow</kbd></span>
+          </div>
+          <div>
+            <span>Jump by keypad position</span
+            ><span><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>KP 1–9</kbd></span>
+          </div>
+          <div>
+            <span>Move window by keypad position</span
+            ><span><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>KP 1–9</kbd></span>
+          </div>
+          <div>
+            <span>Navigate / close inside Picker</span
+            ><span><kbd>Arrows</kbd> or click / <kbd>Enter</kbd> or <kbd>Esc</kbd></span>
+          </div>
+        </div>
+      </section>
+      <section class="install-section" id="install" aria-labelledby="install-title">
+        <div class="wrap section">
+          <div class="section-heading">
+            <p class="eyebrow">Make room for your next task</p>
+            <h2 id="install-title">Start with a little separation.</h2>
+            <p>
+              Version 0.2.0 targets GNOME Shell 46. Choose the installation method that suits you.
+            </p>
+          </div>
+          <div class="install-grid">
+            <div>
+              <h3>1. GNOME Extensions website</h3>
+              <p>
+                <strong>The easiest method.</strong> Visit the extension’s page on
+                extensions.gnome.org.
+              </p>
+              <p>
+                <a
+                  class="text-link"
+                  href="https://extensions.gnome.org/extension/10924/environments-switcher/"
+                  >Visit GNOME Extensions ↗</a
+                >
+              </p>
+              <h3>2. Download the release ZIP</h3>
+              <p>
+                No cloning, Node.js, or build tools needed. Download the latest installable
+                extension ZIP directly. This link automatically follows new GitHub releases.
+              </p>
+              <p>
+                <a
+                  class="button primary"
+                  href="https://github.com/ihoru/gnome-environments-switcher/releases/latest/download/environments-switcher@ihoru.github.io.shell-extension.zip"
+                  >Download from GitHub ↗</a
+                >
+              </p>
+              <p>
+                On GNOME Shell 46, disable an existing installation first. Then download and install
+                the latest release as your normal user:
+              </p>
+              <pre><code>zip=$(mktemp --suffix=.shell-extension.zip) &amp;&amp;
+wget -O "$zip" \
+  https://github.com/ihoru/gnome-environments-switcher/releases/latest/download/environments-switcher@ihoru.github.io.shell-extension.zip &amp;&amp;
+gnome-extensions install --force "$zip" &amp;&amp;
+rm -f "$zip"</code></pre>
+              <p>
+                Log out and back in, then enable Environments Switcher in the Extensions app. The
+                full guide below covers upgrades and the old prototype.
+              </p>
+              <h3>3. Build from source</h3>
+              <p>
+                Use Node.js 24 for development checks. The extension itself runs with GNOME Shell
+                and GJS.
+              </p>
+              <pre><code>sudo apt install gnome-shell gnome-shell-extension-prefs libglib2.0-bin python3
+git clone https://github.com/ihoru/gnome-environments-switcher.git
+cd gnome-environments-switcher
+npm ci
+npm run check</code></pre>
+              <h3>Install and enable</h3>
+              <p>
+                Disable any existing installation first. Then install the checked bundle as your
+                normal user:
+              </p>
+              <pre><code>gnome-extensions install --force dist/environments-switcher@ihoru.github.io.shell-extension.zip</code></pre>
+              <p>Log out and back in, then enable it in the Extensions app or run:</p>
+              <pre><code>gnome-extensions enable environments-switcher@ihoru.github.io</code></pre>
+              <a
+                class="text-link"
+                href="https://github.com/ihoru/gnome-environments-switcher#install-from-source"
+                >Full installation and upgrade guide ↗</a
+              >
+            </div>
+            <aside class="compatibility">
+              <span class="compatibility-label">Before you install</span>
+              <h3>A workspace organizer.<br />Still your GNOME desktop.</h3>
+              <p>
+                Environments do not isolate applications, files, notifications, accounts, or data.
+                They do not relaunch your applications after logout.
+              </p>
+              <p>
+                The extension temporarily adjusts workspace settings and claimed native shortcuts,
+                restoring them on disable when you have not changed them since. Sticky windows stay
+                visible across workspaces and are not moved by the extension.
+              </p>
+              <p>
+                Other GNOME versions are not declared supported. Avoid overlapping workspace and
+                animation extensions. Final X11, Wayland, and multi-monitor live checks remain
+                pending.
+              </p>
+              <p>
+                Workspace counts are advanced settings, not controls on the preferences page. Nine
+                per environment is the tested design target.
+              </p>
+              <a
+                href="https://github.com/ihoru/gnome-environments-switcher/blob/main/docs/RELEASING.md"
+                >Compatibility and release checklist ↗</a
+              >
+            </aside>
+          </div>
+        </div>
+      </section>
+      <section class="section wrap project" id="project">
+        <div>
+          <p class="eyebrow">Built in the open</p>
+          <h2>Make it part of your day.<br />Help make it better.</h2>
+          <p>
+            Found your flow? Give the project a star.<br />Have an idea or spotted a bug? Let’s hear
+            it.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/ihoru/gnome-environments-switcher"
+              >Star on GitHub <span aria-hidden="true">☆</span></a
+            ><a
+              class="text-link"
+              href="https://github.com/ihoru/gnome-environments-switcher/issues/new?template=bug.yml"
+              >Report a bug ↗</a
+            ><a
+              class="text-link"
+              href="https://github.com/ihoru/gnome-environments-switcher/issues/new?template=feature.yml"
+              >Suggest a feature ↗</a
+            >
+          </div>
+        </div>
+        <blockquote>
+          “One small finished task beats ten beautifully organized intentions.”<span
+            >A little encouragement, from the extension</span
+          >
+        </blockquote>
+      </section>
+    </main>
+    <footer class="wrap site-footer">
+      <p>Environments Switcher <span>·</span> v0.2.0</p>
+      <p>Author: <a href="mailto:ihor.polyakov@gmail.com">Igor Polyakov</a></p>
+      <p>
+        <a href="https://github.com/ihoru/gnome-environments-switcher/blob/main/LICENSE"
+          >MIT license</a
+        >
+        <span>·</span> Independent community project
+      </p>
+    </footer>
+  </body>
+</html>

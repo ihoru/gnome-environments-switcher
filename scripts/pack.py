@@ -4,10 +4,10 @@ import shutil
 import subprocess
 import tempfile
 import zipfile
-from validate import ROOT, SOURCE, UUID, SCHEMA, RUNTIME, validate
+from validate import ROOT, SOURCE, UUID, SCHEMA, RUNTIME, PREFERENCES, validate
 
 validate()
-files = {name: SOURCE / name for name in [*RUNTIME, "metadata.json", f"schemas/{SCHEMA}.gschema.xml"]}
+files = {name: SOURCE / name for name in [*RUNTIME, *PREFERENCES, "metadata.json", f"schemas/{SCHEMA}.gschema.xml"]}
 files["LICENSE"] = ROOT / "LICENSE"
 output = ROOT / "dist"
 output.mkdir(exist_ok=True)
@@ -19,7 +19,7 @@ with tempfile.TemporaryDirectory(prefix="environments-switcher-pack-") as tempor
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(files[name], target)
     command = ["gnome-extensions", "pack", "--force", f"--out-dir={output}"]
-    command.extend(f"--extra-source={name}" for name in [*RUNTIME[1:], "LICENSE"])
+    command.extend(f"--extra-source={name}" for name in [*RUNTIME[1:], *PREFERENCES, "LICENSE"])
     subprocess.run([*command, str(stage)], check=True)
 archive = output / f"{UUID}.shell-extension.zip"
 with zipfile.ZipFile(archive) as bundle:

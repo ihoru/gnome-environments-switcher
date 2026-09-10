@@ -1,6 +1,6 @@
 # Release checklist
 
-Version **0.1.0** is dated **2026-09-10** in the changelog. Marketplace upload and review are pending.
+Version **0.1.0** is dated **2026-09-10** in the changelog. Marketplace page: [Environments Switcher](https://extensions.gnome.org/extension/10924/environments-switcher/).
 This checklist distinguishes automated validation from live runtime testing.
 
 ## Automated validation
@@ -12,7 +12,29 @@ This checklist distinguishes automated validation from live runtime testing.
 - [ ] Set the GitHub default branch to `main` after its first push (GitHub refuses this for an empty repository).
 - [ ] Configure a `main` branch rule requiring `Validate`, blocking force pushes/deletion, after that check exists.
 
-The workflow uploads a candidate ZIP; it never publishes a release or submits to GNOME automatically.
+The validation workflow uploads a candidate ZIP. The separate release workflow publishes GitHub
+releases on version increases; GNOME marketplace submission remains manual.
+
+## Automatic GitHub releases
+
+On each push to the repository's default branch, `.github/workflows/release.yml` compares
+`src/metadata.json`'s `version-name` with the version before the push. An increase builds and
+validates the extension with `npm run check`, then publishes `vMAJOR.MINOR.PATCH` at that exact
+commit with the installable ZIP and a SHA-256 checksum. Unchanged versions skip release work;
+invalid versions and downgrades fail. The first push containing metadata also releases its version.
+If one push includes several bumps, it releases only the final version in that push.
+
+Before pushing a release, update `version-name`, `package.json`, and both root package versions in
+`package-lock.json` together. Use stable `MAJOR.MINOR.PATCH` versions. Update the changelog and
+website version/compatibility copy, and complete relevant live checks before the version bump lands.
+The workflow uses the built-in `GITHUB_TOKEN` with `contents: write`; no personal token is needed.
+No release is published from pull requests, feature branches, or tag pushes.
+
+Uploads are staged in a draft and published only after the ZIP and checksum upload successfully.
+Rerun a failed workflow from Actions to retry: an unfinished draft at the same commit can resume,
+and an already published matching ZIP is preserved. A tag pointing to another commit or a different
+published ZIP fails instead of replacing the release. Repository rules must allow the workflow to
+create version tags and releases. This local change does not itself push or publish a release.
 
 ## Local Shexli review
 
@@ -41,7 +63,7 @@ use `--format json` for machine-readable findings rather than relying on the exi
 
 ## Version metadata
 
-Set `src/metadata.json`'s `version-name` to the user-visible extension version (currently `0.1.0`).
+Set `src/metadata.json`'s `version-name` to the user-visible extension version (currently `0.2.0`).
 Keep it within GNOME's 1–16 character limit using letters, numbers, spaces, and periods.
 The npm package version describes development tooling; EGO assigns its own integer `version`,
 which remains omitted from source metadata.
@@ -85,10 +107,17 @@ Record results and unresolved failures in the release notes or a follow-up issue
 - [ ] Sign into the maintainer's extensions.gnome.org account and upload the verified ZIP only after
       explicit publication authorization. Follow the upload form's current requirements.
 - [ ] Address reviewer feedback, rerun relevant checks and record the accepted marketplace URL/version.
-- [ ] After approval, update README installation links and create an authorized GitHub release/tag with
-      the matching artifact and changelog. Never imply acceptance before GNOME approves it.
+- [ ] After approval, update README and website with the approved marketplace installation link.
+      GitHub ZIP releases are handled separately by the version-bump workflow. Never imply acceptance before GNOME approves it.
 
 ## Future improvements
 
 Preferences UI and shortcut editing; translations; theme and accessibility testing; reduced-motion
 support; sanitized screenshots/demo; and ports to newer GNOME versions with their own runtime matrix.
+
+## Permanent download URL
+
+The website and README use GitHub’s `/releases/latest/download/` URL with the stable asset name
+`environments-switcher@ihoru.github.io.shell-extension.zip`. Keep that asset name unchanged on
+every release so the button and `wget` installation command always resolve to the latest ZIP.
+No website edit or Pages deployment is needed for the URL to follow a new release.

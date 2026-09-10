@@ -7,8 +7,8 @@
 
 Navigate by keyboard, move a window and follow it, or choose a workspace from previews on every monitor.
 
-> Version **0.1.0** targets GNOME Shell 46. Installation from source is available below;
-> submission to extensions.gnome.org is pending. The full live compatibility matrix remains
+> Version **0.2.0** targets GNOME Shell 46. Installation options are listed below;
+> See the GNOME Extensions page or download a GitHub release ZIP. The full live compatibility matrix remains
 > pending in [the release checklist](docs/RELEASING.md).
 
 ## How it works
@@ -18,7 +18,9 @@ The panel shows your environment and workspace number. Switching environments re
 one's last workspace.
 
 - A keyboard-controlled picker displays both environments on every monitor.
-- Workspace selection switches immediately; Enter or Escape closes the picker.
+- Workspace selection switches immediately. The picker closes 500 milliseconds after Win/Super is
+  released; holding Win/Super again resets the countdown. If opened without it held, the countdown
+  starts immediately. Enter or Escape closes it early. The delay is configurable in preferences.
 - Window-movement shortcuts follow the window and keep focus.
 - A passive preview shows the destination environment while modifiers are held and briefly after release.
 - Directional animations follow navigation, including wraparound.
@@ -55,7 +57,47 @@ Keypad positions map to workspace numbers as follows:
 Use Num Lock for keypad workspace selection. The cross-environment window-movement shortcut also includes
 `KP_Insert` for Num Lock off. Moving a sticky window is intentionally skipped.
 
-## Install from source
+## Installation
+
+### 1. GNOME Extensions website — easiest
+
+Visit [Environments Switcher on GNOME Extensions](https://extensions.gnome.org/extension/10924/environments-switcher/)
+for installation through the GNOME Extensions website.
+
+### 2. Download a GitHub release ZIP — no cloning
+
+[Download the latest extension ZIP](https://github.com/ihoru/gnome-environments-switcher/releases/latest/download/environments-switcher@ihoru.github.io.shell-extension.zip).
+This permanent link follows the latest GitHub release automatically. It downloads the installable
+extension, not a source-code archive.
+
+On GNOME Shell 46, disable an existing installation first:
+
+```sh
+gnome-extensions disable environments-switcher@ihoru.github.io
+```
+
+Skip that command on a first installation. If using the old prototype, disable
+`environments-switcher@local` instead. Download and install the latest release as your normal
+user with `wget` and `gnome-extensions` (no Node or build tools needed):
+
+```sh
+zip=$(mktemp --suffix=.shell-extension.zip) &&
+wget -O "$zip" \
+  https://github.com/ihoru/gnome-environments-switcher/releases/latest/download/environments-switcher@ihoru.github.io.shell-extension.zip &&
+gnome-extensions install --force "$zip" &&
+rm -f "$zip"
+```
+
+The command uses a unique temporary file, installs only after a successful download, and removes
+the file after successful installation. Log out and back in, then enable it in the Extensions app or run:
+
+```sh
+gnome-extensions enable environments-switcher@ihoru.github.io
+```
+
+### 3. Install from source
+
+<a id="install-from-source"></a>
 
 Runtime requires GNOME Shell **46** and GJS. Node is only used for development checks.
 For building on Ubuntu 24.04, install the tools:
@@ -119,16 +161,38 @@ relocate windows onto remaining workspaces; it does not close them. Unrelated ex
 retained while enabled and are outside the two environment banks.
 
 Nine workspaces per environment is the tested design target. Other counts are advanced settings,
-limited to 18 per environment by GNOME's 36-workspace limit; the picker remains three columns wide. There is no
-preferences window yet. To inspect settings from a clone after building:
+limited to 18 per environment by GNOME's 36-workspace limit; the picker remains three columns wide. Workspace counts remain advanced settings and are not exposed in preferences.
+To inspect settings from a clone after building:
 
 ```sh
 glib-compile-schemas src/schemas
 gsettings --schemadir src/schemas list-recursively org.gnome.shell.extensions.environments-switcher
 ```
 
-Change shortcut keys with `gsettings --schemadir src/schemas set …`, then disable/re-enable the
-extension. Keep the internal `native-shortcut-backup` and `desktop-settings-backup` keys intact;
+Open **Settings** for Environments Switcher in the Extensions app to edit environment names
+and shortcuts. Saved changes apply immediately while the extension is enabled.
+
+- **General:** enter a name and press Enter or Apply; blank names are rejected. Reset restores
+  the original display name. Renaming does not move windows or change workspace counts.
+  **Picker timing** sets picker and mini-picker delays in milliseconds (defaults: 500 for both).
+  Values from 0 to 60,000 apply live; zero closes at the next timer tick after modifier release.
+- **Shortcuts:** expand an action to add, replace, or remove shortcut alternatives, or restore
+  that action’s defaults. Press Escape to cancel recording. Conflicts with another extension
+  action are rejected; remove the conflicting assignment first. An empty list disables the action.
+- **More:** export/import a JSON configuration file, visit the project and give it a star, open
+  prefilled bug reports or feature requests, and view version, author contact, and license details.
+  One of ten short productivity messages is selected at random when preferences opens.
+  Import replaces names, shortcuts, and picker timeouts after validating the complete file. Diagnostic logging,
+  workspace count, session state, and desktop-setting restoration backups are excluded.
+- Native workspace shortcuts claimed by the extension are restored when released, provided they
+  have not subsequently been edited outside the extension. Other extensions may still compete
+  for shortcuts. Application failures appear as Shell notifications.
+
+Name changes also update extension-managed GNOME workspace names. Manual changes to native workspace
+names take precedence for the rest of the enabled session. Original desktop settings remain available
+for restoration when the extension is disabled.
+
+Workspace-count changes made with `gsettings` still require disabling/re-enabling the extension. Keep the internal `native-shortcut-backup` and `desktop-settings-backup` keys intact;
 they contain restoration state. Do not reset the schema while enabled.
 
 ### Disable or remove
@@ -149,6 +213,13 @@ preferences. If restoration fails, preserve the backup keys and report the journ
 - Final public-build X11/Wayland, multi-monitor animation, modifier timing and lifecycle checks
   are pending; see the release checklist rather than treating automated tests as desktop validation.
 - If a shortcut fails, inspect GNOME keyboard settings and other extensions for collisions.
+- In **More → Diagnostics**, check **Enable diagnostic logging** and reproduce the problem.
+  The enabled extension appends timestamped runtime events directly to the displayed log file,
+  even with preferences closed. **Open log file** and **Copy path** help collect relevant lines.
+  Logs are saved to `$XDG_STATE_HOME/environments-switcher/diagnostics.log`
+  (normally `~/.local/state/environments-switcher/diagnostics.log`). Reload the file in your editor
+  to see new lines. Unchecking logging stops file writes. Existing log contents are retained.
+  Import/export does not change logging or record file-transfer operations.
 - Ordinary navigation is quiet. To enable diagnostic logs from a clone:
 
 ```sh
@@ -159,12 +230,18 @@ journalctl -b -o cat | rg '\[environments-switcher\]'
 Set `debug-logging` back to `false` after diagnosis. The extension makes no network requests and
 does not intentionally log window titles or contents. Review diagnostic details before sharing.
 
+## Project website
+
+The static project page is prepared in `site/`, with six screenshots and a demo screencast.
+See [Website preview, media, and publication](docs/WEBSITE.md) to preview it locally, add media,
+and publish later through the manual GitHub Pages workflow.
+
 ## Contributing and release status
 
 See [Contributing](CONTRIBUTING.md), [Changelog](CHANGELOG.md), and
 [Release checklist](docs/RELEASING.md). Report reproducible bugs through GitHub Issues.
 
-Useful next improvements include a preferences UI, translations, theme/accessibility and
+Useful next improvements include translations, theme/accessibility and
 reduced-motion improvements, a demonstration with non-sensitive windows, and tested support for
 newer GNOME releases.
 

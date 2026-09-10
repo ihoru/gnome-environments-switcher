@@ -10,7 +10,15 @@ export default [
   },
   {
     files: ['src/**/*.js'],
-    languageOptions: { globals: { global: 'readonly', console: 'readonly' } },
+    languageOptions: {
+      globals: {
+        global: 'readonly',
+        console: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+      },
+    },
   },
+  { files: ['site/**/*.js'], languageOptions: { globals: globals.browser } },
   { files: ['tests/**/*.js', 'eslint.config.js'], languageOptions: { globals: globals.node } },
 ];

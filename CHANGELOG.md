@@ -1,6 +1,81 @@
 # Changelog
 
-User-visible changes are recorded here. GNOME Extensions marketplace review is tracked separately.
+Significant user-facing and internal changes are recorded here. GNOME Extensions marketplace review is tracked separately.
+
+## Unreleased
+
+### User-facing
+
+- Link to the supplied GNOME Extensions page and the permanent latest GitHub ZIP; provide a download-and-install command using a unique temporary file.
+
+- Start the website demo muted when it enters the viewport; pause offscreen or in a hidden tab, retaining manual playback controls.
+
+- Explain the website’s top-panel indicator example: environment name, current workspace, workspace count, and its menu actions.
+
+- Navigate fullscreen screenshots with Left/Right or Space, with a short transition, reset zoom per image, and reduced-motion support.
+
+- Use native GNOME theme colors for Picker and Preview panels and Preview tiles, keeping labels readable in light and dark themes.
+
+- Add the supplied demo screencast to the website’s video player.
+
+- Add six supplied screenshots: single-monitor and multi-monitor Picker, multi-monitor Preview, and all three Settings pages, with fullscreen zoom and a static gallery fallback.
+
+- Order installation options as GNOME Extensions (publication pending), downloadable GitHub release ZIP, and source build.
+- Publish a tested extension ZIP and checksum to GitHub Releases automatically when the default-branch version increases.
+
+- Open screenshots in an in-page fullscreen viewer with scroll-wheel zoom, drag panning, zoom controls, and Escape to close.
+
+- Adapt the website automatically to the system light or dark appearance, including media placeholders and controls.
+
+- Rename the Environments preferences tab to General and update website and documentation labels.
+
+- Focus the General tab when preferences opens, keeping the first name field out of edit focus.
+- Add an Ubuntu-inspired project website with feature descriptions, keyboard shortcuts, installation details,
+  a screenshot carousel with thumbnail previews, and a separate screencast area ready for user media.
+
+- Add a horizontal separator below the encouragement on the More preferences page.
+- Set the default picker timeout to 500 ms; preserve explicitly configured delays.
+
+- Write runtime diagnostic events directly to the displayed log file while logging is enabled,
+  including when preferences is closed; retain Open log file and Copy path controls.
+- Add configurable picker and mini-picker timeouts in milliseconds, applied live.
+- Move the approved encouragement to the top of More and decorate it as a quotation; label the author row explicitly.
+- Keep settings transfer limited to environment names, shortcuts, and picker timeouts; exclude logging preferences
+  and do not log import/export operations.
+
+- Show one of ten approved productivity jokes and wishes each time preferences opens.
+- Add a More preferences tab with JSON settings export/import, project and star links, version,
+  MIT license, author feedback email, and prefilled GitHub bug/feature forms.
+- Validate imported configuration before applying it and exclude session/restoration state.
+  Exclude workspace counts from import/export; keep the existing count unchanged.
+
+- Add preferences for environment names and all existing keyboard shortcuts, applied live.
+- Support shortcut alternatives, recording, removal, per-action reset, and conflict validation.
+- Update environment labels throughout the panel, menus, pickers, and managed workspace names
+  while preserving later manual desktop edits and original restoration state.
+- Automatically close the workspace picker 500 milliseconds after Win/Super is released, keeping the
+  selected workspace. Holding Win/Super again resets the countdown; opening without it held
+  starts the countdown immediately. Enter, Escape, and the picker shortcut still close it early.
+
+### Internal
+
+- Add an opt-in, isolated GNOME regression check for Picker and Preview label contrast under Yaru light and dark themes.
+
+- Add version-bump detection and draft-first release automation with exact-commit tags and safe retries.
+
+- Prepare manual GitHub Pages publication, local Ubuntu fonts, browser JavaScript linting, and website/media documentation;
+  keep website assets out of the extension bundle.
+
+- Replace manual journal snapshots with asynchronous append-only runtime logging and lifecycle cleanup.
+- Bump the development version to 0.2.0 and cover timeout changes and live file writes with regressions.
+
+- Add versioned settings-file validation, atomic staged imports, file-size limits, and regression tests.
+- Add an environment field to the GitHub feature form for diagnostic prefills.
+
+- Package and validate GTK preferences separately from Shell runtime modules.
+- Add regression coverage for live preferences, shortcut restoration, picker timing, and cleanup.
+- Require categorized changelog entries for significant modifications in agent guidance;
+  use Git for source history instead of creating backup copies.
 
 ## 0.1.0 — 2026-09-10
 

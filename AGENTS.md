@@ -9,8 +9,12 @@ Read README.md for user behavior and docs/RELEASING.md before publication work.
 - Run `npm run check` after changes. Add behavioral regressions for runtime fixes; distinguish mocked
   test results from live Shell verification. Test desktop changes in a disposable session.
 - Keep the runtime allowlist in scripts/validate.py synchronized with new local imports.
-- Back up existing files before substantial edits; retain unrelated dirty work. Keep backups outside
-  the publication tree. Only install, restart Shell, commit, push, or submit when authorized.
+- Use Git for source history; retain unrelated dirty work without creating source backup copies.
+  Only install, restart Shell, commit, push, or submit when authorized.
+- Update `CHANGELOG.md` for every significant modification before considering the work complete.
+  Add entries under `Unreleased`, grouped as `User-facing` (features, behavior, UI, and visible fixes)
+  or `Internal` (tests, refactoring, tooling, and contributor/agent guidance). Describe the resulting
+  change; keep existing release history intact.
 
 ## Current documentation
 

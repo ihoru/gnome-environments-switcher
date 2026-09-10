@@ -13,3 +13,8 @@ body:
       label: Proposed behavior and alternatives
     validations:
       required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Extension, GNOME, and OS versions (prefilled when opened from preferences).

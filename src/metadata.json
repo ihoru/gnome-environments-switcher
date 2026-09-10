@@ -2,7 +2,7 @@
   "uuid": "environments-switcher@ihoru.github.io",
   "name": "Environments Switcher",
   "description": "Personal and Work workspace environments with keyboard navigation, window movement and multi-monitor previews.",
-  "version-name": "0.1.0",
+  "version-name": "0.2.0",
   "shell-version": ["46"],
   "url": "https://github.com/ihoru/gnome-environments-switcher",
   "settings-schema": "org.gnome.shell.extensions.environments-switcher"

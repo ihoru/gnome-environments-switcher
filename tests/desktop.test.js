@@ -26,8 +26,11 @@ function desktopFixture() {
   };
   const variant = (value) => ({ deep_unpack: () => value });
   class Settings {
-    constructor({ settings_schema: schema }) {
-      this.schema = schema.name;
+    constructor({ settings_schema: schema, schema_id }) {
+      this.schema = schema?.name ?? schema_id;
+    }
+    get_strv(key) {
+      return records.get(`${this.schema}/${key}`).value;
     }
     get_value(key) {
       return variant(records.get(`${this.schema}/${key}`).value);
@@ -72,15 +75,16 @@ function desktopFixture() {
   );
   const ext = new Extension();
   let backup = '{}';
+  const labels = { personal: 'Personal', work: 'Work' };
   ext._settings = {
-    get_string: () => backup,
+    get_string: (key) => (key.startsWith('environment-name-') ? labels[key.slice(17)] : backup),
     set_string: (_key, value) => {
       backup = value;
       return true;
     },
   };
   ext._workspaceCount = () => 20;
-  return { ext, records, writes, wm };
+  return { ext, records, writes, wm, labels, backup: () => JSON.parse(backup) };
 }
 
 test('configure count before disabling dynamic mode; preserve extra names without optional schema', () => {
@@ -113,4 +117,41 @@ test('unsupported workspace count fails before changing desktop settings', () =>
   ext._workspacesPerContext = 19;
   assert.throws(() => ext._configureDesktop(), /Invalid setting/);
   assert.equal(writes.length, 0);
+});
+
+test('live renames refresh every surface, preserve extra names and retain the original backup', () => {
+  const { ext, records, wm, labels, backup } = desktopFixture();
+  const id = `${wm}/workspace-names`;
+  records.get(id).user = [...records.get(id).value];
+  const original = [...records.get(id).value];
+  ext._configureDesktop();
+  const surfaces = [];
+  ext._updateIndicator = () => surfaces.push('panel');
+  ext._picker = { refreshNames: () => surfaces.push('picker') };
+  ext._miniPicker = { refreshNames: () => surfaces.push('preview') };
+  for (const name of ['Home', 'Private']) {
+    labels.personal = name;
+    ext._updateEnvironmentNames();
+    assert.equal(records.get(id).value[0], `${name} 1 (1/9)`);
+    assert.deepEqual(backup()[id].user, original);
+    assert.equal(records.get(id).value[18], original[18]);
+  }
+  assert.deepEqual(surfaces, ['panel', 'picker', 'preview', 'panel', 'picker', 'preview']);
+  ext._desktopTransaction.restore();
+  assert.deepEqual(records.get(id).value, original);
+});
+
+test('repeated renames never reclaim native names after a manual edit', () => {
+  const { ext, records, wm, labels } = desktopFixture();
+  ext._configureDesktop();
+  const entry = records.get(`${wm}/workspace-names`);
+  entry.value = ['Manual'];
+  entry.user = ['Manual'];
+  for (const name of ['Home', 'Private', 'Life']) {
+    labels.personal = name;
+    ext._updateEnvironmentNames();
+    assert.deepEqual(entry.value, ['Manual']);
+  }
+  ext._desktopTransaction.restore();
+  assert.deepEqual(entry.value, ['Manual']);
 });

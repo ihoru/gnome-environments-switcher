@@ -9,6 +9,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 export class MiniPicker {
   constructor(extension) {
     this._extension = extension;
+    this._nameLabels = [];
     this._frames = [];
     this._timeout = 0;
     this._monitorSignal = Main.layoutManager.connect('monitors-changed', () => this.hide());
@@ -34,8 +35,8 @@ export class MiniPicker {
         const groups = new St.BoxLayout({
           x_align: Clutter.ActorAlign.CENTER,
           y_align: Clutter.ActorAlign.END,
-          style:
-            'spacing: 16px; padding: 12px; margin-bottom: 40px; background-color: #282828; border-radius: 12px;',
+          style_class: 'modal-dialog',
+          style: 'spacing: 16px; padding: 12px; margin-bottom: 40px; border-radius: 12px;',
         });
         const frame = new St.Bin({
           x: monitor.x,
@@ -59,6 +60,7 @@ export class MiniPicker {
             const physical = (bank === 'work' ? count : 0) + index;
             const tile = new St.BoxLayout({
               vertical: true,
+              style_class: 'button',
               style: `padding: 5px; border: 2px solid ${physical === target ? '#e99b45' : '#555555'}; border-radius: 4px;`,
             });
             row.add_child(tile);
@@ -102,33 +104,46 @@ export class MiniPicker {
               }),
             );
           }
-          group.add_child(
-            new St.Label({
-              text: bank === 'personal' ? 'Personal' : 'Work',
-              x_align: Clutter.ActorAlign.CENTER,
-              style: 'font-size: 18px; font-weight: bold;',
-            }),
-          );
+          const nameLabel = new St.Label({
+            text: ext._environmentName(bank),
+            x_align: Clutter.ActorAlign.CENTER,
+            style: 'font-size: 18px; font-weight: bold;',
+          });
+          this._nameLabels.push({ label: nameLabel, context: bank });
+          group.add_child(nameLabel);
         }
       }
-      let hideAfter = GLib.get_monotonic_time() + 500000;
-      this._timeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 50, () => {
-        const [, , modifiers] = global.get_pointer();
-        const held =
-          (modifiers & Clutter.ModifierType.CONTROL_MASK) !== 0 &&
-          (modifiers & Clutter.ModifierType.MOD1_MASK) !== 0;
-        const now = GLib.get_monotonic_time();
-        if (held) hideAfter = now + 500000;
-        if (held || now < hideAfter) return GLib.SOURCE_CONTINUE;
-        this._timeout = 0;
-        this.hide();
-        return GLib.SOURCE_REMOVE;
-      });
+      this._startAutoHide();
       ext._log('mini-picker-shown', { targetContext: context, logicalWorkspace: logical + 1 });
     } catch (error) {
       this.hide();
       ext._log('mini-picker-error', { error: String(error), stack: error.stack });
     }
+  }
+
+  _startAutoHide() {
+    const held = () => {
+      const modifiers = global.get_pointer()[2];
+      return (
+        (modifiers & Clutter.ModifierType.CONTROL_MASK) !== 0 &&
+        (modifiers & Clutter.ModifierType.MOD1_MASK) !== 0
+      );
+    };
+    let releasedAt = held() ? null : GLib.get_monotonic_time();
+    this._timeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 50, () => {
+      const now = GLib.get_monotonic_time();
+      if (held()) releasedAt = null;
+      else {
+        releasedAt ??= now;
+        const delay = this._extension._settings?.get_int('mini-picker-timeout-ms') ?? 500;
+        if (now >= releasedAt + delay * 1000) {
+          this._timeout = 0;
+          this.hide();
+          return GLib.SOURCE_REMOVE;
+        }
+      }
+      return GLib.SOURCE_CONTINUE;
+    });
   }
 
   hide() {
@@ -144,6 +159,12 @@ export class MiniPicker {
       }
     }
     this._frames = [];
+    this._nameLabels = [];
+  }
+
+  refreshNames() {
+    for (const { label, context } of this._nameLabels)
+      label.text = this._extension._environmentName(context);
   }
 
   destroy() {

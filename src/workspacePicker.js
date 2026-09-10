@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 import Clutter from 'gi://Clutter';
+import GLib from 'gi://GLib';
 import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
@@ -8,36 +9,44 @@ import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 export class WorkspacePicker {
   constructor(extension) {
     this._extension = extension;
+    this._nameLabels = [];
     this._dialog = null;
+    this._autoCloseSource = 0;
   }
 
   toggle() {
     try {
       this._toggle();
     } catch (error) {
+      this._stopAutoClose();
       this._dialog?.destroy();
       this._dialog = null;
       this._tiles = [];
+      this._nameLabels = [];
       throw error;
     }
   }
 
   _toggle() {
     if (this._dialog) {
-      this._dialog.close();
+      this._close();
       return;
     }
     const ext = this._extension;
     const dialog = new ModalDialog.ModalDialog({ shouldFadeOut: false, shellReactive: true });
     this._dialog = dialog;
+    dialog.connect('closed', () => this._stopAutoClose());
     dialog.connect('destroy', () => {
+      this._stopAutoClose();
       this._dialog = null;
       this._tiles = [];
+      this._nameLabels = [];
     });
     // One stage-wide modal grab, with a separate picker panel per monitor.
     // Multiple ModalDialogs would compete for input and block each other.
     dialog.backgroundStack.hide();
     this._tiles = [];
+    this._nameLabels = [];
     this._selectedPhysical = ext._activeWorkspaceIndex();
     this._focusMonitor = global.display.get_current_monitor();
     const panels = [];
@@ -57,7 +66,7 @@ export class WorkspacePicker {
       if (event.type() !== Clutter.EventType.KEY_PRESS) return Clutter.EVENT_PROPAGATE;
       const key = event.get_key_symbol();
       if (key === Clutter.KEY_Escape) {
-        dialog.close();
+        this._close();
         return Clutter.EVENT_STOP;
       }
       const directions = new Map([
@@ -71,12 +80,12 @@ export class WorkspacePicker {
         return Clutter.EVENT_STOP;
       }
       if (key === Clutter.KEY_Return || key === Clutter.KEY_KP_Enter) {
-        dialog.close();
+        this._close();
         return Clutter.EVENT_STOP;
       }
       return Clutter.EVENT_PROPAGATE;
     });
-    const monitorSignal = Main.layoutManager.connect('monitors-changed', () => dialog.close());
+    const monitorSignal = Main.layoutManager.connect('monitors-changed', () => this._close());
     dialog.connect('destroy', () => Main.layoutManager.disconnect(monitorSignal));
     const focused =
       panels.find((item) => item.monitor.index === global.display.get_current_monitor()) ??
@@ -86,8 +95,44 @@ export class WorkspacePicker {
       ext._log('picker-open-failed');
       dialog.destroy();
     } else {
+      this._startAutoClose();
       ext._log('picker-opened', { monitors: panels.map((item) => item.monitor.index) });
     }
+  }
+
+  _startAutoClose() {
+    this._stopAutoClose();
+    // Pointer state may expose the physical Mod4 bit rather than virtual Super.
+    const superMask = Clutter.ModifierType.SUPER_MASK | Clutter.ModifierType.MOD4_MASK;
+    const superHeld = () => (global.get_pointer()[2] & superMask) !== 0;
+    let releasedAt = superHeld() ? null : GLib.get_monotonic_time();
+    this._autoCloseSource = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 50, () => {
+      const now = GLib.get_monotonic_time();
+      if (superHeld()) {
+        releasedAt = null;
+      } else {
+        releasedAt ??= now;
+        const delay = this._extension._settings?.get_int('picker-timeout-ms') ?? 500;
+        if (now >= releasedAt + delay * 1000) {
+          this._autoCloseSource = 0;
+          this._close();
+          return GLib.SOURCE_REMOVE;
+        }
+      }
+      return GLib.SOURCE_CONTINUE;
+    });
+  }
+
+  _stopAutoClose() {
+    if (this._autoCloseSource) {
+      GLib.Source.remove(this._autoCloseSource);
+      this._autoCloseSource = 0;
+    }
+  }
+
+  _close() {
+    this._stopAutoClose();
+    this._dialog?.close();
   }
 
   _select(physical, vector = null) {
@@ -140,7 +185,8 @@ export class WorkspacePicker {
       vertical: true,
       x_align: Clutter.ActorAlign.CENTER,
       y_align: Clutter.ActorAlign.CENTER,
-      style: 'background-color: #282828; border-radius: 16px; padding: 24px; spacing: 16px;',
+      style_class: 'modal-dialog',
+      style: 'border-radius: 16px; padding: 24px; spacing: 16px;',
     });
     panel.add_child(
       new St.Label({
@@ -172,7 +218,7 @@ export class WorkspacePicker {
           reactive: Boolean(workspace),
           style_class: 'button',
           style: `padding: 5px; border-radius: 8px; border: 2px solid ${selected ? '#e99b45' : '#555555'};`,
-          accessible_name: `${context} workspace ${logical + 1}`,
+          accessible_name: `${ext._environmentName(context)} workspace ${logical + 1}`,
         });
         this._tiles.push({ button, physical, monitor: monitor.index });
         button.connect('key-focus-in', () => {
@@ -233,23 +279,35 @@ export class WorkspacePicker {
         row.add_child(button);
         if (selected) activeButton = button;
       }
-      group.add_child(
-        new St.Label({
-          text: context === 'personal' ? 'Personal' : 'Work',
-          x_align: Clutter.ActorAlign.CENTER,
-          style: 'font-size: 18px; font-weight: bold;',
-        }),
-      );
+      const nameLabel = new St.Label({
+        text: ext._environmentName(context),
+        x_align: Clutter.ActorAlign.CENTER,
+        style: 'font-size: 18px; font-weight: bold;',
+      });
+      this._nameLabels.push({ label: nameLabel, context });
+      group.add_child(nameLabel);
     }
     return { panel, activeButton };
   }
 
+  refreshNames() {
+    for (const { label, context } of this._nameLabels)
+      label.text = this._extension._environmentName(context);
+    for (const { button, physical } of this._tiles ?? []) {
+      const count = this._extension._workspacesPerContext;
+      const context = physical < count ? 'personal' : 'work';
+      button.accessible_name = `${this._extension._environmentName(context)} workspace ${(physical % count) + 1}`;
+    }
+  }
+
   destroy() {
+    this._stopAutoClose();
     if (this._dialog) {
       this._dialog.destroy();
       this._dialog = null;
     }
     this._tiles = [];
+    this._nameLabels = [];
     this._extension = null;
   }
 }
