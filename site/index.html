@@ -10,26 +10,73 @@
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#211E22" media="(prefers-color-scheme: dark)" />
-    <title>Environments Switcher — a place for work, a place for everything else</title>
+    <title>Environments Switcher — GNOME Extension</title>
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=8c33b31e810762d5" />
-    <script type="module" src="app.js"></script>
+    <script src="theme.js?v=80953d89a7b433f3"></script>
+    <link rel="stylesheet" href="styles.css?v=edd082df5e9fe429" />
+    <script type="module" src="app.js?v=1e3de515471ad8d5"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header wrap">
-      <a class="brand" href="#" aria-label="Environments Switcher home"
-        ><img src="assets/icon.svg" width="34" height="34" alt="" /><span
-          >Environments<br /><strong>Switcher</strong></span
-        ></a
-      >
-      <nav aria-label="Main navigation">
-        <a href="#features">Features</a><a href="#screenshots">Gallery</a
-        ><a href="#install">Install</a
-        ><a class="repo-link" href="https://github.com/ihoru/gnome-environments-switcher"
-          >GitHub <span aria-hidden="true">↗</span></a
+    <header class="site-header">
+      <div class="header-content wrap">
+        <a class="brand" href="#" aria-label="Environments Switcher home"
+          ><img src="assets/icon.svg" width="34" height="34" alt="" /><span
+            >Environments<br /><strong>Switcher</strong></span
+          ></a
         >
-      </nav>
+        <nav aria-label="Main navigation">
+          <a href="#features">Features</a><a href="#screenshots">Gallery</a
+          ><a href="#install">Install</a
+          ><a class="repo-link" href="https://github.com/ihoru/gnome-environments-switcher"
+            >GitHub <span aria-hidden="true">↗</span></a
+          >
+          <button
+            id="theme-toggle"
+            type="button"
+            hidden
+            aria-label="Theme: system. Switch to light theme"
+          >
+            <span data-theme-icon="system" aria-hidden="true"
+              ><svg
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+              >
+                <rect x="3" y="4" width="18" height="13" rx="2" />
+                <path d="M8 21h8M12 17v4" /></svg
+            ></span>
+            <span data-theme-icon="light" aria-hidden="true" hidden
+              ><svg
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path
+                  d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"
+                /></svg
+            ></span>
+            <span data-theme-icon="dark" aria-hidden="true" hidden
+              ><svg
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+              >
+                <path d="M20.5 14A9 9 0 0 1 10 3.5 9 9 0 1 0 20.5 14Z" /></svg
+            ></span>
+          </button>
+        </nav>
+      </div>
     </header>
     <main id="main">
       <section class="hero wrap" aria-labelledby="hero-title">
@@ -202,7 +249,7 @@
           <div class="section-heading split-heading">
             <div>
               <p class="eyebrow">Take a closer look</p>
-              <h2 id="gallery-title">Your workspace, in view.</h2>
+              <h2 id="gallery-title">Tool demo</h2>
             </div>
             <p>
               From the big picture to the smallest preference.<br /><span id="screenshots-notice"
@@ -399,8 +446,7 @@
       <section class="install-section" id="install" aria-labelledby="install-title">
         <div class="wrap section">
           <div class="section-heading">
-            <p class="eyebrow">Make room for your next task</p>
-            <h2 id="install-title">Start with a little separation.</h2>
+            <h2 id="install-title">Installation instructions</h2>
             <p>
               Version 0.2.1 targets GNOME Shell 46. Choose the installation method that suits you.
             </p>
@@ -499,8 +545,7 @@ gnome-extensions enable environments-switcher@ihoru.github.io</code></pre>
       </section>
       <section class="section wrap project" id="project">
         <div>
-          <p class="eyebrow">Built in the open</p>
-          <h2>Make it part of your day.<br />Help make it better.</h2>
+          <h2>Free and open source</h2>
           <p>
             Found your flow? Give the project a star.<br />Have an idea or spotted a bug? Let’s hear
             it.
@@ -520,9 +565,10 @@ gnome-extensions enable environments-switcher@ihoru.github.io</code></pre>
           </div>
         </div>
         <blockquote>
-          “One small finished task beats ten beautifully organized intentions.”<span
-            >A little encouragement, from the extension</span
-          >
+          <div id="encouragement">
+            “One small finished task beats ten beautifully organized intentions.”
+          </div>
+          <span>A little encouragement, from the extension</span>
         </blockquote>
       </section>
     </main>

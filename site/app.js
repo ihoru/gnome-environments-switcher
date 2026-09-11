@@ -1,5 +1,6 @@
-import { media } from './media.js';
-import { createScreenshotViewer } from './screenshotViewer.js';
+import { startEncouragement } from './encouragement.js?v=5b9f96e6df6c68a3';
+import { media } from './media.js?v=013a45ddca5a31e2';
+import { createScreenshotViewer } from './screenshotViewer.js?v=b6278ba027b33a3a';
 
 const loadedScreenshots = new Map();
 const openScreenshot = createScreenshotViewer((direction) => {
@@ -188,3 +189,14 @@ if (media.video.sources.length) {
   });
   container.append(video);
 }
+
+startEncouragement(document.querySelector('#encouragement'));
+const header = document.querySelector('.site-header');
+const updateHeaderHeight = () => {
+  document.documentElement.style.setProperty(
+    '--header-height',
+    `${header.getBoundingClientRect().height}px`,
+  );
+};
+new ResizeObserver(updateHeaderHeight).observe(header);
+updateHeaderHeight();
