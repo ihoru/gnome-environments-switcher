@@ -4,6 +4,11 @@ Significant user-facing and internal changes are recorded here. GNOME Extensions
 
 ## Unreleased
 
+### Internal
+
+- Configure engineering skills for GitHub Issues, canonical triage labels, and a single-context domain documentation layout.
+- Add a linked glossary of extension interface elements, navigation, preferences, settings, runtime modules, and development terminology.
+
 ## 0.2.1 — 2026-09-10
 
 ### User-facing
