@@ -27,3 +27,17 @@ version-specific ID when appropriate. Retry alternate names if results are unsui
 Then call `query-docs` for each distinct concept with the selected ID and a complete question.
 Use the fetched documentation; prefer it over web search for library docs. This is unnecessary for
 pure refactoring, scripts from scratch, business-logic debugging, code review, or general concepts.
+
+## Agent skills
+
+### Issue tracker
+
+Use GitHub Issues. Read `docs/agents/issue-tracker.md` before ticket operations.
+
+### Triage labels
+
+Use the five canonical labels. Read `docs/agents/triage-labels.md` before triage.
+
+### Domain docs
+
+Use a single-context layout. Read `docs/agents/domain.md` before domain exploration.
