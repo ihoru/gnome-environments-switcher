@@ -40,7 +40,7 @@
 }
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 24px;
+  scroll-padding-top: calc(var(--header-height, 112px) + 24px);
 }
 body {
   margin: 0;
@@ -104,6 +104,12 @@ h3 {
   padding-block: 96px;
 }
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: var(--paper);
+}
+.header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -800,7 +806,7 @@ code {
   .section {
     padding-block: 64px;
   }
-  .site-header {
+  .header-content {
     min-height: 92px;
     gap: 12px;
   }
@@ -951,7 +957,7 @@ code {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     color-scheme: dark;
     --paper: #211e22;
     --ink: #f4eff4;
@@ -968,9 +974,26 @@ code {
     --placeholder-icon: #bba5bb;
     --quote-text: #e8dce8;
   }
-  .gallery-toolbar button {
-    color: var(--ink);
-  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --paper: #211e22;
+  --ink: #f4eff4;
+  --muted: #c0b8c1;
+  --line: #514752;
+  --tint: #302a32;
+  --surface: #29242b;
+  --gallery-background: #1b181d;
+  --media-background: #322b34;
+  --selected-background: #462b27;
+  --accent-text: #ff956e;
+  --focus: #ffad8f;
+  --placeholder-text: #e8dce8;
+  --placeholder-icon: #bba5bb;
+  --quote-text: #e8dce8;
+}
+.gallery-toolbar button {
+  color: var(--ink);
 }
 
 .screenshot-open {
@@ -1103,4 +1126,62 @@ code {
 
 .install-grid p {
   overflow-wrap: anywhere;
+}
+
+#encouragement {
+  display: grid;
+}
+#encouragement > span {
+  grid-area: 1 / 1;
+}
+.quote-size {
+  visibility: hidden;
+  pointer-events: none;
+}
+.quote-text {
+  opacity: 1;
+  transition: opacity 200ms ease;
+}
+.quote-text.is-fading {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .quote-text {
+    transition: none;
+  }
+}
+
+#theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+#theme-toggle:hover {
+  background: var(--tint);
+}
+#theme-toggle span,
+#theme-toggle svg {
+  display: block;
+}
+@media (max-width: 480px) {
+  .header-content {
+    padding-inline: 12px;
+    gap: 8px;
+  }
+  .header-content nav {
+    gap: 8px;
+  }
+  .header-content .brand {
+    gap: 6px;
+    font-size: 12px;
+  }
 }

@@ -14,13 +14,21 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory site
 
 Open `http://localhost:8000/`. Use HTTP rather than `file://` for JavaScript modules.
 Run `npm run check` for formatting, JavaScript lint, extension checks, and packaging.
-It also refreshes the CSS content hash in the stylesheet URL. After editing CSS during
+It also refreshes content hashes in CSS and JavaScript URLs, including local module imports. After editing assets during
 local previews, run `python3 scripts/version_site_css.py` and reload the page.
-The Pages workflow refreshes this hash before each upload, so changed CSS gets a new
-cache URL while unchanged CSS remains cacheable. An already-open page needs a reload
-to receive the new HTML and stylesheet URL.
+The Pages workflow refreshes these hashes before each upload. Dependencies are versioned
+before their importers, so a changed module also invalidates the entry point. Unchanged
+assets remain cacheable. An already-open page needs a reload to receive the new URLs.
+The encouragement quote uses the ten settings messages, chooses one on page load, and
+changes to a different one every 30 seconds with a short fade. Rotation pauses in hidden
+tabs, and reduced-motion preferences disable the fade.
 Browser checks should also cover narrow screens, keyboard navigation, media failures,
 and a project subpath such as `/gnome-environments-switcher/`.
+
+The header theme button cycles System → Light → Dark → System and remembers the
+selection locally. System follows operating-system changes. A small synchronous script
+applies the saved theme before the stylesheet loads; without JavaScript, the page
+follows the system theme and hides the button.
 
 ## Add screenshots and the screencast
 
