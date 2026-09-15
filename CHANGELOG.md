@@ -4,6 +4,10 @@ Significant user-facing and internal changes are recorded here. GNOME Extensions
 
 ## Unreleased
 
+### User-facing
+
+- Wrap horizontal workspace navigation and window movement within the current matrix row, including incomplete rows, while keeping the active environment.
+
 ### Internal
 
 - Configure engineering skills for GitHub Issues, canonical triage labels, and a single-context domain documentation layout.

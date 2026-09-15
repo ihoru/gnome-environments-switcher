@@ -27,28 +27,79 @@ function extensionFixture() {
   return { ext, state, global };
 }
 
-test('directional movement covers every workspace, direction, and environment', () => {
-  for (let index = 0; index < 18; index++) {
-    for (const delta of [-3, -1, 1, 3]) {
-      const { ext, state } = extensionFixture();
-      let current = index;
-      let focused = false;
-      state.focus = {
-        get_workspace: () => ({ index: () => current }),
-        is_on_all_workspaces: () => false,
-        activate: () => {
-          focused = true;
-        },
-      };
-      ext._moveWindowToContextAndLogical = (_window, context, logical) => {
-        current = (context === 'work' ? 9 : 0) + logical;
-      };
-      ext._moveFocusedWindowByDirection(delta);
-      assert.equal(current, Math.floor(index / 9) * 9 + (((index % 9) + delta + 9) % 9));
-      assert.equal(focused, true);
-      assert.equal(state.activations.length, 1);
-      assert.equal(state.activations[0].vector.dy, Math.abs(delta) === 3 ? Math.sign(delta) : 0);
-    }
+// Explicit nine-workspace destinations, indexed by the source workspace.
+const destinations = {
+  '-1': [2, 0, 1, 5, 3, 4, 8, 6, 7],
+  1: [1, 2, 0, 4, 5, 3, 7, 8, 6],
+  '-3': [6, 7, 8, 0, 1, 2, 3, 4, 5],
+  3: [3, 4, 5, 6, 7, 8, 0, 1, 2],
+};
+
+function assertWindowStep(count, bank, from, delta, target) {
+  const { ext, state } = extensionFixture();
+  ext._workspacesPerContext = count;
+  const source = bank * count + from;
+  let current = source;
+  let focused = false;
+  state.focus = {
+    get_workspace: () => ({ index: () => current }),
+    is_on_all_workspaces: () => false,
+    activate: () => {
+      focused = true;
+    },
+  };
+  ext._moveWindowToContextAndLogical = (_window, context, logical) => {
+    current = (context === 'work' ? count : 0) + logical;
+  };
+  ext._moveFocusedWindowByDirection(delta);
+  assert.equal(current, bank * count + target);
+  assert.equal(focused, target !== from);
+  assert.equal(state.activations.length, target === from ? 0 : 1);
+  if (target !== from) {
+    assert.equal(state.activations[0].context, bank ? 'work' : 'personal');
+    assert.equal(state.activations[0].logical, target);
+    assert.equal(state.activations[0].vector.dx, Math.abs(delta) === 1 ? Math.sign(delta) : 0);
+    assert.equal(state.activations[0].vector.dy, Math.abs(delta) === 3 ? Math.sign(delta) : 0);
+  }
+}
+
+test('navigation and window movement cover every workspace, direction, and environment', () => {
+  for (const bank of [0, 1])
+    for (let from = 0; from < 9; from++)
+      for (const delta of [-3, -1, 1, 3]) {
+        const target = destinations[delta][from];
+        const { ext, state } = extensionFixture();
+        ext._activeContext = bank ? 'work' : 'personal';
+        ext._activeWorkspaceLogical = () => from;
+        ext._stepLogicalWorkspace(delta);
+        assert.equal(state.activations[0].context, ext._activeContext);
+        assert.equal(state.activations[0].logical, target);
+        assert.equal(state.activations[0].vector.dx, Math.abs(delta) === 1 ? Math.sign(delta) : 0);
+        assert.equal(state.activations[0].vector.dy, Math.abs(delta) === 3 ? Math.sign(delta) : 0);
+        assertWindowStep(9, bank, from, delta, target);
+      }
+});
+
+test('horizontal steps cycle through existing row cells for every supported count', () => {
+  for (let count = 1; count <= 18; count++) {
+    const cells = Array.from({ length: count }, (_, index) => index);
+    const rows = [];
+    while (cells.length) rows.push(cells.splice(0, 3));
+    for (const bank of [0, 1])
+      for (const row of rows)
+        for (const [column, from] of row.entries())
+          for (const delta of [-1, 1]) {
+            const target =
+              delta === -1 ? (row[column - 1] ?? row.at(-1)) : (row[column + 1] ?? row[0]);
+            const { ext, state } = extensionFixture();
+            ext._workspacesPerContext = count;
+            ext._activeContext = bank ? 'work' : 'personal';
+            ext._activeWorkspaceLogical = () => from;
+            ext._stepLogicalWorkspace(delta);
+            assert.equal(state.activations[0].context, ext._activeContext);
+            assert.equal(state.activations[0].logical, target);
+            assertWindowStep(count, bank, from, delta, target);
+          }
   }
 });
 
@@ -67,10 +118,10 @@ test('missing, sticky, out-of-bank and failed moves do not follow', () => {
   }
 });
 
-test('small workspace counts wrap both positive and negative row steps', () => {
+test('small workspace counts preserve positive and negative vertical steps', () => {
   for (const count of [1, 2, 3, 4, 9])
     for (let from = 0; from < count; from++)
-      for (const delta of [-3, -1, 1, 3]) {
+      for (const delta of [-3, 3]) {
         const { ext, state } = extensionFixture();
         ext._workspacesPerContext = count;
         ext._activeWorkspaceLogical = () => from;

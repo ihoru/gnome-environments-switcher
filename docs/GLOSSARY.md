@@ -47,27 +47,27 @@ mini-picker, while “workspace preview” means the contents of an individual t
 
 ## Navigation and window actions
 
-| Element                                 | Meaning                                                                                                                                                  |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Super / Win**                         | Modifier usually labeled with the Windows logo; used by the default picker shortcut.                                                                     |
-| **Primary / Ctrl**                      | `<Primary>` in stored shortcuts denotes the Control modifier used here.                                                                                  |
-| **KP / keypad**                         | Numeric keypad keys. The mapping follows physical keypad positions: `7,8,9 → 1,2,3`; `4,5,6 → 4,5,6`; `1,2,3 → 7,8,9`.                                   |
-| **Num Lock / KP_Insert**                | Keypad number mode; workspace selection expects Num Lock. The default cross-environment move also accepts keypad Insert when Num Lock is off.            |
-| **Shortcut / keybinding / accelerator** | A key combination assigned to an action, stored as a string such as `<Super>w`.                                                                          |
-| **Shortcut alternative**                | Another combination triggering the same action. An empty alternatives list disables that action.                                                         |
-| **Shortcut conflict**                   | A combination already assigned to another extension action. Preferences reject it; conflicting native workspace bindings are temporarily suspended.      |
-| **Switch environment**                  | Activate the other environment's last workspace; default `Ctrl+Alt+KP_0`.                                                                                |
-| **Previous / next workspace**           | Step backward/forward one logical position; defaults `Ctrl+Alt+Left/Right`.                                                                              |
-| **Workspace above / below**             | Step by minus/plus three logical positions; defaults `Ctrl+Alt+Up/Down`.                                                                                 |
-| **Wraparound**                          | Continue from the end to the beginning, or vice versa, within an environment's workspace sequence.                                                       |
-| **Select workspace**                    | Activate the logical position matching a keypad key; default `Ctrl+Alt+KP_1…KP_9`.                                                                       |
-| **Focused window**                      | Window currently receiving keyboard input; the target of window-movement actions.                                                                        |
-| **Move and follow**                     | Move the focused window, activate its destination workspace, and focus it again. Directional and keypad move defaults add Shift to navigation shortcuts. |
-| **Move to other environment**           | Move and follow while preserving the window's logical workspace number; default `Ctrl+Shift+Alt+KP_0` or `KP_Insert`.                                    |
-| **Sticky window**                       | Window visible on all workspaces. Window-movement actions intentionally skip it.                                                                         |
-| **Picker timeout**                      | Delay after Super is released, or from opening if it is not held. Default 500 ms. Holding Super again restarts the release countdown.                    |
-| **Mini-picker timeout**                 | Delay once Ctrl and Alt are no longer both held. Default 500 ms; holding both again resets the countdown.                                                |
-| **Close picker**                        | Enter, keypad Enter, Escape, or the toggle action closes the overlay. The selected workspace remains active; Escape does not undo selection.             |
+| Element                                 | Meaning                                                                                                                                                                       |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Super / Win**                         | Modifier usually labeled with the Windows logo; used by the default picker shortcut.                                                                                          |
+| **Primary / Ctrl**                      | `<Primary>` in stored shortcuts denotes the Control modifier used here.                                                                                                       |
+| **KP / keypad**                         | Numeric keypad keys. The mapping follows physical keypad positions: `7,8,9 → 1,2,3`; `4,5,6 → 4,5,6`; `1,2,3 → 7,8,9`.                                                        |
+| **Num Lock / KP_Insert**                | Keypad number mode; workspace selection expects Num Lock. The default cross-environment move also accepts keypad Insert when Num Lock is off.                                 |
+| **Shortcut / keybinding / accelerator** | A key combination assigned to an action, stored as a string such as `<Super>w`.                                                                                               |
+| **Shortcut alternative**                | Another combination triggering the same action. An empty alternatives list disables that action.                                                                              |
+| **Shortcut conflict**                   | A combination already assigned to another extension action. Preferences reject it; conflicting native workspace bindings are temporarily suspended.                           |
+| **Switch environment**                  | Activate the other environment's last workspace; default `Ctrl+Alt+KP_0`.                                                                                                     |
+| **Workspace left / right**              | Move left/right within the current three-column row, wrapping among existing cells; defaults `Ctrl+Alt+Left/Right`.                                                           |
+| **Workspace above / below**             | Step by minus/plus three logical positions; defaults `Ctrl+Alt+Up/Down`.                                                                                                      |
+| **Wraparound**                          | Continue from one boundary to the other: horizontal navigation and window moves wrap within the current row; vertical steps wrap within the environment's workspace sequence. |
+| **Select workspace**                    | Activate the logical position matching a keypad key; default `Ctrl+Alt+KP_1…KP_9`.                                                                                            |
+| **Focused window**                      | Window currently receiving keyboard input; the target of window-movement actions.                                                                                             |
+| **Move and follow**                     | Move the focused window, activate its destination workspace, and focus it again. Directional and keypad move defaults add Shift to navigation shortcuts.                      |
+| **Move to other environment**           | Move and follow while preserving the window's logical workspace number; default `Ctrl+Shift+Alt+KP_0` or `KP_Insert`.                                                         |
+| **Sticky window**                       | Window visible on all workspaces. Window-movement actions intentionally skip it.                                                                                              |
+| **Picker timeout**                      | Delay after Super is released, or from opening if it is not held. Default 500 ms. Holding Super again restarts the release countdown.                                         |
+| **Mini-picker timeout**                 | Delay once Ctrl and Alt are no longer both held. Default 500 ms; holding both again resets the countdown.                                                                     |
+| **Close picker**                        | Enter, keypad Enter, Escape, or the toggle action closes the overlay. The selected workspace remains active; Escape does not undo selection.                                  |
 
 See [Keyboard shortcuts](../README.md#keyboard-shortcuts) for the default action table.
 
@@ -110,7 +110,7 @@ The table covers every schema key; numbered shortcut families cover keys 1 throu
 | `environment-picker`                                                                              | Open/close picker shortcut alternatives.                                                                                                                                |
 | `toggle-context`                                                                                  | Switch-environment shortcut alternatives.                                                                                                                               |
 | `move-other-environment`                                                                          | Cross-environment move-and-follow alternatives.                                                                                                                         |
-| `environment-previous`, `environment-next`                                                        | Previous/next workspace alternatives.                                                                                                                                   |
+| `environment-previous`, `environment-next`                                                        | Left/right workspace alternatives, wrapping within the current row.                                                                                                     |
 | `environment-up`, `environment-down`                                                              | Vertical workspace alternatives.                                                                                                                                        |
 | `environment-move-left`, `environment-move-right`, `environment-move-up`, `environment-move-down` | Directional window-movement alternatives.                                                                                                                               |
 | `switch-workspace-1` … `switch-workspace-9`                                                       | Keypad selection alternatives. The suffix identifies the keypad position, not the displayed workspace number.                                                           |

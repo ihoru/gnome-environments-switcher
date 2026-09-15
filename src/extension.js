@@ -73,6 +73,16 @@ function _clampInt(value, min, max) {
   return Math.max(min, Math.min(max, Math.floor(value)));
 }
 
+// Horizontal steps wrap within the existing cells of the current three-column row.
+function _directionalWorkspace(logical, delta, count) {
+  if (Math.abs(delta) === 1) {
+    const rowStart = Math.floor(logical / 3) * 3;
+    const rowSize = Math.min(3, count - rowStart);
+    return rowStart + ((((logical - rowStart + delta) % rowSize) + rowSize) % rowSize);
+  }
+  return (((logical + delta) % count) + count) % count;
+}
+
 function _workspaceName(label, index, perContextCount) {
   return `${label} ${index + 1} (${index + 1}/${perContextCount})`;
 }
@@ -890,7 +900,7 @@ export default class EnvironmentsSwitcherExtension extends Extension {
     const source = workspace.index();
     if (source < 0 || source >= count * 2) return;
     const context = source < count ? CONTEXT_PERSONAL : CONTEXT_WORK;
-    const logical = ((((source % count) + delta) % count) + count) % count;
+    const logical = _directionalWorkspace(source % count, delta, count);
     const physical = (context === CONTEXT_WORK ? count : 0) + logical;
     if (physical === source) return;
     this._moveWindowToContextAndLogical(window, context, logical);
@@ -910,10 +920,11 @@ export default class EnvironmentsSwitcherExtension extends Extension {
   }
 
   _stepLogicalWorkspace(delta) {
-    const logical =
-      (((this._activeWorkspaceLogical() + delta) % this._workspacesPerContext) +
-        this._workspacesPerContext) %
-      this._workspacesPerContext;
+    const logical = _directionalWorkspace(
+      this._activeWorkspaceLogical(),
+      delta,
+      this._workspacesPerContext,
+    );
     this._log('direction-request', { delta, logicalWorkspace: logical + 1 });
     const vector =
       Math.abs(delta) === 3 ? { dx: 0, dy: Math.sign(delta) } : { dx: Math.sign(delta), dy: 0 };
