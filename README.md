@@ -38,13 +38,17 @@ session restoration: applications and their windows are not relaunched after log
 | Open/close the picker                           | `Super+W`                          |
 | Switch environment                              | `Ctrl+Alt+KP_0`                    |
 | Move window to the other environment and follow | `Ctrl+Shift+Alt+KP_0`              |
-| Previous/next workspace within the environment  | `Ctrl+Alt+Left/Right`              |
+| Move left/right within the row, with wraparound | `Ctrl+Alt+Left/Right`              |
 | Move up/down three workspaces, with wraparound  | `Ctrl+Alt+Up/Down`                 |
 | Move window in a direction and follow           | `Ctrl+Shift+Alt+Arrow`             |
 | Select workspace by keypad position             | `Ctrl+Alt+KP_1…KP_9`               |
 | Move window by keypad position and follow       | `Ctrl+Shift+Alt+KP_1…KP_9`         |
 | Navigate inside the picker                      | Arrow keys or click                |
 | Close picker, keeping selected workspace        | `Enter`, keypad Enter, or `Escape` |
+
+Horizontal navigation and window movement wrap within the current three-column row: for example,
+Left from workspace 1 goes to workspace 3, and Right from workspace 3 goes to workspace 1.
+Incomplete rows wrap among their existing workspaces; a single-workspace row stays in place.
 
 Keypad positions map to workspace numbers as follows:
 

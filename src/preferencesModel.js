@@ -18,13 +18,13 @@ export const SHORTCUT_GROUPS = [
   {
     title: 'Directional navigation',
     actions: [
-      ['environment-previous', 'Previous workspace'],
-      ['environment-next', 'Next workspace'],
+      ['environment-previous', 'Workspace left (wrap within row)'],
+      ['environment-next', 'Workspace right (wrap within row)'],
       ['environment-up', 'Workspace above'],
       ['environment-down', 'Workspace below'],
       ...['left', 'right', 'up', 'down'].map((direction) => [
         `environment-move-${direction}`,
-        `Move window ${direction} and follow`,
+        `Move window ${direction} and follow${['left', 'right'].includes(direction) ? ' (wrap within row)' : ''}`,
       ]),
     ],
   },

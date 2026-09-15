@@ -4,6 +4,10 @@ Significant user-facing and internal changes are recorded here. GNOME Extensions
 
 ## Unreleased
 
+### User-facing
+
+- Wrap horizontal workspace navigation and window movement within the current matrix row, including incomplete rows, while keeping the active environment.
+
 ## 0.2.1 — 2026-09-10
 
 ### User-facing

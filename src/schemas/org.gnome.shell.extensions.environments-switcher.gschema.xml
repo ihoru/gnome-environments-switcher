@@ -76,11 +76,11 @@
     </key>
     <key name="environment-previous" type="as">
       <default>['&lt;Primary&gt;&lt;Alt&gt;Left']</default>
-      <summary>Previous workspace in the active environment</summary>
+      <summary>Workspace left in the active environment, wrapping within the row</summary>
     </key>
     <key name="environment-next" type="as">
       <default>['&lt;Primary&gt;&lt;Alt&gt;Right']</default>
-      <summary>Next workspace in the active environment</summary>
+      <summary>Workspace right in the active environment, wrapping within the row</summary>
     </key>
     <key name="environment-up" type="as">
       <default>['&lt;Primary&gt;&lt;Alt&gt;Up']</default>
@@ -92,11 +92,11 @@
     </key>
     <key name="environment-move-left" type="as">
       <default>['&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;Left']</default>
-      <summary>Move the focused window left within its environment</summary>
+      <summary>Move the focused window left and follow, wrapping within its row</summary>
     </key>
     <key name="environment-move-right" type="as">
       <default>['&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;Right']</default>
-      <summary>Move the focused window right within its environment</summary>
+      <summary>Move the focused window right and follow, wrapping within its row</summary>
     </key>
     <key name="environment-move-up" type="as">
       <default>['&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;Up']</default>
